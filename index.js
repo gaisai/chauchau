@@ -1,6 +1,5 @@
 // ページの読み込みを待つ
 
-
 function init() {
 
     // サイズを指定
@@ -19,6 +18,8 @@ function init() {
 
     // カメラを作成
     const camera = new THREE.PerspectiveCamera(45, width / height);
+    vec = 20;
+    acs = 2;
     camera.position.set(0, 0, +1000);
 
     // 箱を作成
@@ -31,9 +32,24 @@ function init() {
 
     // 毎フレーム時に実行されるループイベントです
     function tick() {
-        box.rotation.y += 0.01;
-        renderer.render(scene, camera); // レンダリング
+        //box.rotation.y += 0.01;
+        box.position.y += vec
+        if(box.position.y > 200 || box.position.y < -200){
+            vec *= -acs
+            if( Math.abs(vec) > 10 * Math.pow(2,4) + 1 || Math.abs(vec) < 20 - 1 ){
+                acs = 1/acs
+            }
+            if (box.position.y > 0){
+                box.position.y = 200;
+            }else{
+                box.position.y = -200
+            }
+        }
 
+
+        
+        
+        renderer.render(scene, camera); // レンダリング
         requestAnimationFrame(tick);
     }
 }
