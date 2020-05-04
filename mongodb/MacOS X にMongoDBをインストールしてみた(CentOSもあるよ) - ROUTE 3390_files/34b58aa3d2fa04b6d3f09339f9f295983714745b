@@ -1,0 +1,87 @@
+/* <system section="theme" selected="bordeaux"> */
+@charset "utf-8";
+/* CSS Document */
+/* @Main
+====================================== */body{margin:0;padding:0;color:#fff;font-family:Helvetica,Arial,ヒラギノ角ゴ Pro W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,ＭＳ\ Ｐゴシック,MS PGothic,sans-serif;-moz-transition:all 1s ease;-webkit-transition:all 1s ease;background-color:#3d3d3d}a{color:#c00;text-decoration:none;-webkit-transition:.3s ease;-webkit-transition-property:opacity,border,color,background;-moz-transition:.3s ease;-moz-transition-property:opacity,border,color,background;-o-transition:.3s ease;-o-transition-property:opacity,border,color,background;transition:.3s ease;transition-property:opacity,border,color,background}a:hover{text-decoration:underline}a:visited{color:#a86f79}pre{padding:20px;background:#3d3d3d;color:#f5f5f5}pre a{color:#ff4545}
+/* @Container
+====================================== */#content{width:900px;color:#3d3d3d;margin:0 auto;background:#fff}#box2{width:160px;margin:20px}#box2,#wrapper{font-size:13px;float:left}#wrapper{width:100%;margin-right:-201px;min-height:100px}#wrapper:after{content:".";display:block;height:0;font-size:0;clear:both;visibility:hidden}#main-inner{border-right:1px solid #ddd}#wrapper>*{margin-right:200px}#content:after{content:".";display:block;height:0;font-size:0;clear:both;visibility:hidden}
+/* @BLOG-TITLE
+====================================== */#globalheader-container{border-top:4px solid #ba0000;color:#666\9}#blog-title{margin:10px auto 0;width:900px;text-align:center}#blog-title-inner{text-align:left}#blog-title h1{padding:30px 0 35px}#blog-title h1,#blog-title h2{display:inline-block;*display:inline;*zoom:1;margin:0}#title a{color:#fff;font-size:30px;font-weight:700}#title a:hover{color:#de0c30;text-decoration:none}#blog-description{font-size:13px;font-weight:700;margin-left:.5em!important}
+/* @Custom Header-image */.header-image-enable #blog-title #title{padding:20px 0 0 20px}
+/* @Top-box and Navigation Module
+====================================== */#bottom-editarea,#top-box,#top-editarea{width:900px;text-align:left;margin:0 auto;font-size:14px}.breadcrumb{margin-bottom:20px}.breadcrumb a{color:#aaa}
+/* @ENTRY
+====================================== */.entry{padding-bottom:50px}.entry-content{margin:20px 0;padding:0 20px}.entry-header{position:relative;margin:0 0 .5em;padding:20px 95px .2em 20px;border-bottom:1px solid #ddd}h1.entry-title{font-size:26px;margin:0;line-height:1.3}.entry-title a:visited{color:#ba0000}.categories a{margin-right:5px;color:#666;line-height:1.5}.date{position:absolute;right:20px;bottom:6px;font-weight:700}.date a{color:#000}.entry-header-menu{position:absolute;right:20px;bottom:30px}.entry-header-menu a{color:#fff;background:#ba0000;padding:5px 15px;font-weight:700;font-size:12px}.entry-header-menu a:hover{text-decoration:none;background:#de0c30}.entry-footer{margin:30px 20px 0}.entry-footer .social-buttons{margin:10px 0}.entry-footer-section{color:#8f8f8f;font-style:italic;margin:0}.entry-footer-time a{color:#8f8f8f;text-decoration:underline}.entry-footer-time a:hover{color:#c00}
+/* @Comment
+====================================== */.comment{margin:0 0 10px;padding:0}.comment li{list-style:none;padding:0 8px;border-left:4px solid #dfdfdf;margin:15px 0}.comment-user-name{display:inline;font-weight:700;margin:0 .3em 0 0}.comment-content{line-height:1.7}.comment-content p{margin:.5em 0;word-wrap:break-word}.comment-metadata{display:block;margin:0;color:#aaa}.comment-metadata a{color:#aaa}.leave-comment-title{font-size:12px;font-weight:700;padding:5px 15px;display:inline;border:1px solid #dfdfdf;-webkit-transition:.3s ease;-webkit-transition-property:opacity,border,color,background;-moz-transition:.3s ease;-moz-transition-property:opacity,border,color,background;-o-transition:.3s ease;-o-transition-property:opacity,border,color,background;transition:.3s ease;transition-property:opacity,border,color,background}.leave-comment-title:hover{background:#ba0000;color:#fff;text-decoration:none}.pager{margin-right:10px!important;padding:20px 0 20px 20px}.pager a{font-size:12px;font-weight:700;padding:5px 25px;background:#bbb;font-size:13px;color:#f5f5f5;line-height:1.5;word-wrap:break-word;display:inline-block;max-width:200px}.pager-next a{margin-right:5px}.pager a:hover{background:#ba0000;text-decoration:none}
+/* @Entry TextStyle
+====================================== */.entry-content{font-size:14px;line-height:1.8}.entry-content img{max-width:100%}.entry-content p{margin:.8em 0}.entry-content h1,.entry-content h2,.entry-content h3,.entry-content h4,.entry-content h5,.entry-content h6{margin:1em 0 .5em}.entry-content h1{font-size:160%}.entry-content h2{font-size:150%}.entry-content h3{font-size:140%}.entry-content h4{font-size:120%}.entry-content h5{font-size:110%}.entry-content h6{font-size:100%}.entry-content h1,.entry-content h2,.entry-content h3{border-bottom:1px dotted #999}.entry blockquote{padding:15px;margin:1em 0;border:1px solid #ddd}.entry blockquote p{margin-top:0;margin-bottom:0}.entry-content ol,.entry-content ul{margin:0 0 0 1.5em;padding:0}.entry-content table{border-collapse:collapse;border-spacing:0}.entry-content table td,.entry-content table th{border:1px solid #ddd;padding:5px 10px}.entry-content table th{background:#fafafa}a.keyword{color:#3d3d3d;text-decoration:none;border-bottom:1px solid #dedede}pre.lang-aa{font-size:14px;line-height:15px}.gist pre,pre.lang-aa{color:#3d3d3d}
+/* @Module
+====================================== */.hatena-module{margin-bottom:50px;font-size:12px}.hatena-module-title,.hatena-module-title a,.hatena-module-title a:hover,.hatena-module-title a:visited{text-align:left;font-size:15px;font-weight:700;margin-bottom:5px;padding-bottom:3px;color:#3d3d3d}.hatena-module-body ul{margin:0;padding:0;list-style:none;line-height:1.5}.hatena-module-body ul li{padding:.5em 0}.hatena-module-body ul li.archive{padding-top:15px}.hatena-module-recent-entries li{padding:10px 0;border-bottom:1px solid #ddd}
+/* @Module::Profile
+====================================== */.hatena-module-profile .id{display:block;line-height:2;font-weight:700}.hatena-module-profile .id a{color:#ba0000}.profile-icon{border:1px solid #ccc}.hatena-module-profile .profile-description{margin:0 0 5px;line-height:1.5}
+/* @Module::Search
+====================================== */form.search-form{margin-top:10px}form.search-form input{border:1px solid #666;vertical-align:middle}.search-form .search-module-input{width:130px;padding:3px;margin:0;font-size:12px}.search-form .search-module-button{height:23px;width:23px;border:none;text-indent:-999px;margin-left:-5px;cursor:pointer;background:#666 url('https://cdn.blog.st-hatena.com/images/theme/search_w.png?version=41ebc72c1bbb098b2e004fd3c0552660') 50% 50% no-repeat}
+/* @Footer
+====================================== */#footer{clear:both;text-align:center;padding:20px 0;font-size:small}#footer a{color:#dfdfdf}
+/* @HATENA-EMBED
+====================================== */
+/* ---STANDARD
+.hatena-embed {
+    padding-left: 20px;
+    margin: 1em 0;
+}
+
+.hatena-embed.fotolife,
+.hatena-embed.twitpic {
+padding:0;
+margin:0;
+border: none;
+background: transparent;
+display: inline;
+}
+
+.hatena-embed.hatena-bookmark {
+background:url('https://cdn.blog.st-hatena.com/images/admin/curation/services/hatena-bookmark.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat left 3px;
+}
+
+.hatena-embed.foursquare {
+background:url('https://cdn.blog.st-hatena.com/images/admin/curation/services/foursquare.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat left 3px;
+}
+
+.hatena-embed.hatena-coco {
+background:url('https://cdn.blog.st-hatena.com/images/admin/curation/services/hatena-coco.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat left 3px;
+}
+
+.hatena-embed.hatena-haiku {
+background:url('https://cdn.blog.st-hatena.com/images/admin/curation/services/hatena-haiku.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat left 3px;
+}
+
+.hatena-embed.twitter {
+background:url('https://cdn.blog.st-hatena.com/images/admin/curation/services/twitter.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat left 3px;
+}
+
+*/
+/* @HATENA-EMBED(FOTOLIFE,TWITPIC)
+====================================== */.hatena-embed.hatena-fotolife,.hatena-embed.twitpic{padding:10px 10px 30px;margin:1em 0;background:transparent;display:inline-block;border:1px solid #dfdfdf;box-shadow:0 1px 5px rgba(0,0,0,.16);background:#fff;text-align:center}.hatena-embed.hatena-fotolife{background:#fff url('https://cdn.blog.st-hatena.com/images/theme/hatena-embed/embed-fotolife.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat 100% 100%}.hatena-embed.twitpic{padding:10px}.hatena-embed.hatena-fotolife .hatena-embed-image,.hatena-embed.twitpic .hatena-embed-image{display:inline-block;max-width:600px}.hatena-embed.hatena-fotolife .hatena-embed-body,.hatena-embed.hatena-fotolife .hatena-embed-body a,.hatena-embed.twitpic .hatena-embed-body,.hatena-embed.twitpic .hatena-embed-body a{text-align:center;font-family:Homemade Apple,cursive;color:#454545;font-size:16px;margin-top:10px}
+/* @HATENA-EMBED(COCO,4SQ)
+====================================== */.hatena-embed.foursquare,.hatena-embed.hatena-coco{margin:1em 0;box-shadow:0 1px 5px rgba(0,0,0,.16)}.hatena-embed.hatena-coco{border:1px solid #e2d279;padding:20px 30px;background:#faf9e6 url('https://cdn.blog.st-hatena.com/images/theme/hatena-embed/embed-coco.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat 100% 100%}.hatena-embed.foursquare .hatena-embed-image,.hatena-embed.hatena-coco .hatena-embed-image{width:100px;height:100px}.hatena-embed.foursquare{border:1px solid #c1d5db;padding:20px 30px;background:#e6eff2 url('https://cdn.blog.st-hatena.com/images/theme/hatena-embed/embed-4sq.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat 100% 100%}
+/* @HATENA-EMBED(BOOKMARK)
+====================================== */.hatena-embed.hatena-bookmark{padding:15px 15px 15px 70px;margin:1em 0;background:transparent;border:1px solid #dfdfdf;box-shadow:0 1px 5px rgba(0,0,0,.16);background:#fff url('https://cdn.blog.st-hatena.com/images/theme/hatena-embed/embed-bookmark.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat 10px top;position:relative}.hatena-embed.hatena-bookmark a{text-decoration:underline}.hatena-embed.hatena-bookmark .hatena-embed-image{max-height:50px}
+/* @HATENA-EMBED(HAIKU)
+====================================== */.hatena-embed.hatena-haiku{padding:15px 15px 15px 70px;background:transparent;background:#fff url('https://cdn.blog.st-hatena.com/images/theme/hatena-embed/embed-haiku.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat 5px 5px}
+/* @HATENA-EMBED(MONOLITH)
+====================================== */.hatena-embed.hatena-haiku,.hatena-embed.hatena-monolith{margin:1em 0;border:1px solid #dfdfdf;box-shadow:0 1px 5px rgba(0,0,0,.16)}.hatena-embed.hatena-monolith{width:580px;padding:15px;background:transparent;background:#fff url('https://cdn.blog.st-hatena.com/images/theme/hatena-embed/embed-monolith.png?version=41ebc72c1bbb098b2e004fd3c0552660') no-repeat 100% 100%}.hatena-embed.hatena-monolith .hatena-embed-image{display:block;float:left;max-width:98px;border:1px solid #dfdfdf}.hatena-embed.hatena-monolith .hatena-embed-body{float:left;width:470px;margin-left:10px}.hatena-embed.hatena-monolith:after{content:"";display:block;height:0;visibility:hidden;clear:both}
+/* @HATENA-EMBED(TWITTER)
+====================================== */
+/* @HATENA-EMBED(ATND)
+====================================== */.hatena-embed.atnd,.hatena-embed.twitter{padding:10px 0;margin:1em 0;border-bottom:1px dotted #757575;border-top:1px dotted #757575}.hatena-embed.atnd{font-family:PT Sans Caption,Helvetica,ヒラギノ角ゴ Pro W3,HiraKakuProN-W3,Hiragino Kaku Gothic Pro,メイリオ,Meiryo,ＭＳ\ Ｐゴシック,sans-serif}.hatena-embed-detail.atnd-detail{font-size:20px;font-weight:700;color:#262626}.hatena-embed-detail.atnd-detail:hover{color:#ea1f00;text-decoration:none}.hatena-embed.atnd .content-body{font-size:12px;color:#222}
+/* @About
+====================================== */.page-about #google_afc_user{padding:20px}.page-about dt{font-size:16px;font-weight:700}.page-about dd{margin-left:0;margin-bottom:30px}.page-about .entry-content img.profile-icon{height:16px;width:16px}
+/* @Archive
+====================================== */.page-archive #main-inner{padding:20px}.page-archive #main-inner section{padding-bottom:40px}.page-archive .archive-entry .date{position:static}.page-archive .archive-entry .entry-title{font-size:18px;margin:0 0 .3em;line-height:1.5}.page-archive .archive-entry p{margin:1em 0}
+/* </system> */
+
+/* <system section="background" selected="default"> */
+/* default */
+/* </system> */
