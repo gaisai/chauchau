@@ -14,26 +14,8 @@ function init() {
     mouse_diff_y = 0 
     mouse_move =0 ;
 
-    function ElementRequestPointerLock(element){
-		var list = [
-			"requestPointerLock"
-			//"webkitRequestPointerLock",
-			//"mozRequestPointerLock"
-		];
-		var i;
-		var num = list.length;
-		for(i=0;i < num;i++){
-			if(element[list[i]]){
-				element[list[i]]();
-				return true;
-			}
-		}
-		return false;
-	}
-
     elm = document.getElementById("text");
-    ca = document.getElementById("myCanvas")
-
+    ca = document.getElementById("myCanvas");
 
     Screen.showCursor = false;
 	// マウスカーソルを画面内にロックする
@@ -63,7 +45,7 @@ function init() {
     camera_v_y = 0;
     camera_a_y =0;
     const camera_speed = 50;
-    const camera_a_jump = 50;
+    const camera_a_jump = 100;
     const camera_a_grav = -5;
 
     camera_rota_x = 0;//上下
@@ -76,17 +58,37 @@ function init() {
     camera.rotation.set(camera_rota_x, camera_rota_y, camera_rota_z);
     
     // 箱を作成
-    const geometry = new THREE.BoxGeometry(4000, 100, 4000);
-    const material = new THREE.MeshNormalMaterial();
-    const box = new THREE.Mesh(geometry, material);
-    box.position.set(0,0,0)
-    scene.add(box);
+    //const material = new THREE.MeshStandardMaterial({color: 0xFF0000});
+    //const geometry = new THREE.BoxGeometry(4000, 100, 4000);
+    //const box = new THREE.Mesh(geometry, material);
+    //box.position.set(0,0,0)
+
+    boxes = new THREE.Group();    
+    box_n = 5
+    var box = new Array(box_n);
+
+    for(i=0; i < box_n ; i++){
+        box[i] = new THREE.Mesh(
+            new THREE.BoxGeometry(4000, 100, 4000),
+            new THREE.MeshLambertMaterial({color: "rgb(100,0,0)"})
+        );
+        box[i].position.set(4000*i,0,4000*i)
+        boxes.add(box[i])
+    }
+
+    scene.add(boxes);
     
+    const light = new THREE.DirectionalLight(0xFFFFFF);
+    const light_2 = new THREE.AmbientLight(0xFFFFFF, 1.0);
+    light.position.set(1000,500,0)
+    scene.add(light);
+    scene.add(light_2);
+
     // イベント時に呼び出される
     canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
     canvas.addEventListener('keydown', onKeyDown, false);
     canvas.addEventListener('keyup', onKeyUp, false);
-    //canvas.addEventListener('mousemove', onMouseMove, false);
+    canvas.addEventListener('mousemove', onMouseMove, false);
     canvas.addEventListener('mousedown', onMouseDown, false);
     canvas.addEventListener('mouseup', onMouseUp, false);
 
@@ -133,7 +135,10 @@ function init() {
         renderer.render(scene, camera); 
         requestAnimationFrame(tick);
 
-        elm.innerHTML = 'camera x-> x:' + camera.position.x + ', y:' + camera.position.y + ', z:' + camera.position.z + '<br>rota x:' + camera.rotation.x/Math.PI + 'PI, y:' + camera.rotation.y/Math.PI + 'PI, z:' + camera.rotation.z/Math.PI + "PI" 
+        // 情報を出す
+        elm.innerHTML = 'camera x-> x:' + camera.position.x + ', y:' + camera.position.y + ', z:' + camera.position.z +
+                        '<br>rota x:' + camera.rotation.x/Math.PI + 'PI, y:' + camera.rotation.y/Math.PI + 'PI, z:' + camera.rotation.z/Math.PI + 'PI' +
+                        '<br>mouse x:' + mouse_diff_x + ', y:' + mouse_diff_y
         
     }
 
@@ -172,6 +177,9 @@ function init() {
                     camera_a_y = camera_a_jump
                     keydown_space = 1;
                 }
+            case 27://esc
+                ElementExitPointerLock(e);
+                break;
             default:
                 break;
         }
@@ -213,58 +221,41 @@ function init() {
     // マウスが動かされたときに動く関数
     // ****************************************
     function onMouseMove(e){
-        if(camera_rota_flag == 0){ return; }
-        mouse_diff_x = Math.PI * (mouse_x - MouseEventGetMomentX(e))/400
-        mouse_diff_y = Math.PI * (mouse_y - MouseEventGetMomentY(e))/400
-        mouse_x = MouseEventGetMomentX(e) 
-        mouse_y = MouseEventGetMomentY(e)
+        mouse_diff_x = Math.PI * -1 * e.movementX/400
+        mouse_diff_y = Math.PI * e.movementY/400
         mouse_move = 1;
         console.log("mousemove")
-        console.log(e)
-    }
-
-    ca.onclick = function (e){
-		//ポインタロックを開始する
-		//ElementRequestPointerLock(ca);
-	};
-
-    function MouseEventGetMomentX (mouse_event){
-		return (mouse_event.momentX || mouse_event.webkitMovementX || mouse_event.mozMovementX || 0);
-	}
-
-	function MouseEventGetMomentY (mouse_event){
-		return (mouse_event.momentY || mouse_event.webkitMovementY || mouse_event.mozMovementY || 0);
-	}
-
-    ca.onmousemove = function (e){
-        if(camera_rota_flag == 0){ return; }
-        mouse_diff_x = Math.PI * (mouse_x - MouseEventGetMomentX(e))/400
-        mouse_diff_y = Math.PI * (mouse_y - MouseEventGetMomentY(e))/400
-        mouse_x = MouseEventGetMomentX(e) 
-        mouse_y = MouseEventGetMomentY(e)
-        mouse_move = 1;
-        console.log("mousemove--")
-        console.log(e)
+        console.log(mouse_x+":"+mouse_y)
+        
     }
 
     // ****************************************
     // 左クリックが押されたされたときに動く関数
     // ****************************************
     function onMouseDown(e){
-        camera_rota_flag = 1;
-        mouse_x = e.clientX
-        mouse_y = e.clientY
         ElementRequestPointerLock(ca);
-        console.log("mousedown")
-        console.log(e)
+    }
+
+    function ElementRequestPointerLock(element){
+        if(element["requestPointerLock"]){
+            element["requestPointerLock"]();
+            return true;
+        }
+		return false;
+    }
+    
+    function ElementExitPointerLock(element){
+        if(element["exitPointerLock"]){
+            element["exitPointerLock"]();
+            return true;
+        }
+		return false;
     }
 
     // ****************************************
     // 左クリックが上げられたときに動く関数
     // ****************************************
     function onMouseUp(){
-        camera_rota_flag = 0;
-        mouse_diff_x = 0
-        mouse_diff_y = 0
+
     }
 }
