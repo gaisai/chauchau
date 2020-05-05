@@ -1,6 +1,119 @@
 // ページの読み込みを待つ
 
-function init() {
+class player {
+    acc_walk = 50;
+    acc_jump = 100;
+    constructor(height, width) {
+        acc_walk = 50;
+        acc_jump = 100;
+        this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000000);
+        this.camera.position.set(0,0,0);
+        this.camera.rotation.set(0,0,0);
+        this.acc = { x: 0, y: 0, z: 0 };    //移動する加速度
+        this.vel = { x: 0, y: 0, z: 0 };    //移動する速度
+        this.key = {
+            w:      this.make_key_config( 87,   ture,   false,  function(){ return( this.add_acc( 0,0,-1 * acc_walk)) }),
+            s:      this.make_key_config( 83,   ture,   false,  function(){ return( this.add_acc( 0,0,acc_walk)) }),
+            a:      this.make_key_config( 65,   ture,   false,  function(){ return( this.add_acc( -1 * acc_walk,0,0)) }),
+            d:      this.make_key_config( 68,   ture,   false,  function(){ return( this.add_acc( acc_walk,0,0)) }),
+            space:  this.make_key_config( 32,   false,  false,  function(){ return( this.add_acc( 0,acc_jump,0)) })
+        }
+
+    }
+
+    make_key_config(numb,cont,k_d_f,acti){
+        var key_tmp = {
+            num: numb,
+            continuation: cont,
+            key_down_flag: k_d_f,
+            acttion: acti
+        }
+
+        retuen(key_tmp);
+    }
+
+
+}
+
+
+class block {
+    constructor(scene) {
+        this.boxes = new THREE.Group();    
+        this.box_n = 5
+        var box = new Array(this.box_n);
+    
+        for(var i=0; i < this.box_n ; i++){
+            box[i] = new THREE.Mesh(
+                new THREE.BoxGeometry(4000, 100, 4000),
+                new THREE.MeshLambertMaterial({color: "rgb(100,0,0)"})
+            );
+            box[i].position.set(4000*i,0,4000*i)
+            this.boxes.add(box[i])
+        }
+    
+        scene.add(this.boxes);
+    }
+}
+
+
+function init(){
+
+    aaa = {a:1,b:2,c:function(){return(bbb(1,3))}};
+    for(let key in aaa){
+        console.log("aaa."+key+"="+aaa[key])
+    }
+
+    function bbb(a,b){
+        return(a+b)
+    }
+
+    console.log("aaa.c()="+aaa.c())
+
+
+    elm = document.getElementById("text");
+
+    // サイズを指定
+    const width = 960;
+    const height = 540;
+
+    // レンダラーを作成
+    const renderer = new THREE.WebGLRenderer({
+        canvas: document.querySelector('#myCanvas')
+    });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(width, height);
+    canvas = document.querySelector('#myCanvas')
+
+    // シーンを作成
+    const scene = new THREE.Scene();
+
+    // 光源を作成
+    const light = [ new THREE.DirectionalLight(0xFFFFFF), new THREE.AmbientLight(0xFFFFFF, 1.0) ];
+    light[0].position.set(1000,500,0)
+    scene.add(light[0]);
+    scene.add(light[1]);
+
+
+    // カメラとボックスを作成
+    camera = new player(width,height);
+    box = new block(scene);
+
+
+        
+
+
+
+
+
+
+}
+
+
+
+function init_o() {
+
+    
+
 
     keydown_a = 0
     keydown_d = 0
@@ -15,11 +128,6 @@ function init() {
     mouse_move =0 ;
 
     elm = document.getElementById("text");
-    ca = document.getElementById("myCanvas");
-
-    Screen.showCursor = false;
-	// マウスカーソルを画面内にロックする
-    Screen.lockCursor = true;
 
     // サイズを指定
     const width = 960;
@@ -56,7 +164,8 @@ function init() {
     const camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000000);
     camera.position.set(camera_x_x, camera_x_y, camera_x_z);
     camera.rotation.set(camera_rota_x, camera_rota_y, camera_rota_z);
-    
+
+
     // 箱を作成
     boxes = new THREE.Group();    
     box_n = 5
@@ -174,6 +283,7 @@ function init() {
                 }
             case 27://esc
                 ElementExitPointerLock(e);
+                mouse_move = 0;
                 break;
             default:
                 break;
@@ -207,6 +317,7 @@ function init() {
                 break;
             case 32:
                 keydown_space = 0;
+                break;
             default:
                 break;
         }
@@ -228,7 +339,8 @@ function init() {
     // 左クリックが押されたされたときに動く関数
     // ****************************************
     function onMouseDown(e){
-        ElementRequestPointerLock(ca);
+        ElementRequestPointerLock(canvas);
+        
     }
 
     function ElementRequestPointerLock(element){
