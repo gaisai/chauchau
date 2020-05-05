@@ -58,11 +58,6 @@ function init() {
     camera.rotation.set(camera_rota_x, camera_rota_y, camera_rota_z);
     
     // 箱を作成
-    //const material = new THREE.MeshStandardMaterial({color: 0xFF0000});
-    //const geometry = new THREE.BoxGeometry(4000, 100, 4000);
-    //const box = new THREE.Mesh(geometry, material);
-    //box.position.set(0,0,0)
-
     boxes = new THREE.Group();    
     box_n = 5
     var box = new Array(box_n);
@@ -256,6 +251,6 @@ function init() {
     // 左クリックが上げられたときに動く関数
     // ****************************************
     function onMouseUp(){
-
+        console.log('omanko');
     }
 }
