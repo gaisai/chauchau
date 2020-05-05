@@ -13,8 +13,31 @@ function init() {
     mouse_diff_x = 0
     mouse_diff_y = 0 
     mouse_move =0 ;
-    elm = document.getElementById("text");
 
+    function ElementRequestPointerLock(element){
+		var list = [
+			"requestPointerLock"
+			//"webkitRequestPointerLock",
+			//"mozRequestPointerLock"
+		];
+		var i;
+		var num = list.length;
+		for(i=0;i < num;i++){
+			if(element[list[i]]){
+				element[list[i]]();
+				return true;
+			}
+		}
+		return false;
+	}
+
+    elm = document.getElementById("text");
+    ca = document.getElementById("myCanvas")
+
+
+    Screen.showCursor = false;
+	// マウスカーソルを画面内にロックする
+    Screen.lockCursor = true;
 
     // サイズを指定
     const width = 960;
@@ -63,7 +86,7 @@ function init() {
     canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
     canvas.addEventListener('keydown', onKeyDown, false);
     canvas.addEventListener('keyup', onKeyUp, false);
-    canvas.addEventListener('mousemove', onMouseMove, false);
+    //canvas.addEventListener('mousemove', onMouseMove, false);
     canvas.addEventListener('mousedown', onMouseDown, false);
     canvas.addEventListener('mouseup', onMouseUp, false);
 
@@ -88,8 +111,8 @@ function init() {
         }
 
         //速度分だけカメラを移動する．
-        camera.position.x += camera_v_x * Math.cos(camera.rotation.y) + -1 * camera_v_z * Math.sin(camera.rotation.y)
-        camera.position.z += camera_v_z * Math.cos(camera.rotation.y) + camera_v_x * Math.sin(camera.rotation.y)
+        camera.position.x += camera_v_x * Math.cos(camera.rotation.y) + camera_v_z * Math.sin(camera.rotation.y)
+        camera.position.z += camera_v_z * Math.cos(camera.rotation.y) + -1 * camera_v_x * Math.sin(camera.rotation.y)
         camera.position.y += camera_v_y ;
 
         //障害物があるときはその前で止まる
@@ -110,7 +133,7 @@ function init() {
         renderer.render(scene, camera); 
         requestAnimationFrame(tick);
 
-        elm.innerHTML = 'camera<br>x<br> x:' + camera.position.x + '<br> y:' + camera.position.y + '<br> z:' + camera.position.z + '<br>rota<br>x:' + camera.rotation.x/Math.PI + 'PI<br>rota<br>y:' + camera.rotation.y/Math.PI + 'PI<br>rota<br>z:' + camera.rotation.z/Math.PI + "PI" 
+        elm.innerHTML = 'camera x-> x:' + camera.position.x + ', y:' + camera.position.y + ', z:' + camera.position.z + '<br>rota x:' + camera.rotation.x/Math.PI + 'PI, y:' + camera.rotation.y/Math.PI + 'PI, z:' + camera.rotation.z/Math.PI + "PI" 
         
     }
 
@@ -191,14 +214,37 @@ function init() {
     // ****************************************
     function onMouseMove(e){
         if(camera_rota_flag == 0){ return; }
-        mouse_diff_x = Math.PI * (mouse_x - e.clientX )/400
-        mouse_diff_y = Math.PI * (mouse_y - e.clientY)/400
-        mouse_x = e.clientX 
-        mouse_y = e.clientY
+        mouse_diff_x = Math.PI * (mouse_x - MouseEventGetMomentX(e))/400
+        mouse_diff_y = Math.PI * (mouse_y - MouseEventGetMomentY(e))/400
+        mouse_x = MouseEventGetMomentX(e) 
+        mouse_y = MouseEventGetMomentY(e)
         mouse_move = 1;
         console.log("mousemove")
         console.log(e)
-        
+    }
+
+    ca.onclick = function (e){
+		//ポインタロックを開始する
+		//ElementRequestPointerLock(ca);
+	};
+
+    function MouseEventGetMomentX (mouse_event){
+		return (mouse_event.momentX || mouse_event.webkitMovementX || mouse_event.mozMovementX || 0);
+	}
+
+	function MouseEventGetMomentY (mouse_event){
+		return (mouse_event.momentY || mouse_event.webkitMovementY || mouse_event.mozMovementY || 0);
+	}
+
+    ca.onmousemove = function (e){
+        if(camera_rota_flag == 0){ return; }
+        mouse_diff_x = Math.PI * (mouse_x - MouseEventGetMomentX(e))/400
+        mouse_diff_y = Math.PI * (mouse_y - MouseEventGetMomentY(e))/400
+        mouse_x = MouseEventGetMomentX(e) 
+        mouse_y = MouseEventGetMomentY(e)
+        mouse_move = 1;
+        console.log("mousemove--")
+        console.log(e)
     }
 
     // ****************************************
@@ -208,6 +254,7 @@ function init() {
         camera_rota_flag = 1;
         mouse_x = e.clientX
         mouse_y = e.clientY
+        ElementRequestPointerLock(ca);
         console.log("mousedown")
         console.log(e)
     }
