@@ -31,7 +31,7 @@ class player {
         this.position_flag = false;
         this.rotation_flag = false;
 
-        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000000);
+        this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 2000000);
             this.camera.position.set(0,1200,0);
             //this.camera.rotation.set(Math.PI/2,0,0);
             this.camera.rotation.set(0,0,0);
