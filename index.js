@@ -1,37 +1,153 @@
 // ページの読み込みを待つ
 
+let active_flag = false;
+
+function ElementRequestPointerLock(element){
+    if(element["requestPointerLock"]){
+        element["requestPointerLock"]();
+        active_flag = true;
+        return true;
+    }
+    return false;
+}
+
+
+function ElementExitPointerLock(element){
+    if(element["exitPointerLock"]){
+        element["exitPointerLock"]();
+        active_flag = false;
+        return true;
+    }
+    return false;
+}
+
+
 class player {
-    acc_walk = 50;
-    acc_jump = 100;
-    constructor(height, width) {
-        acc_walk = 50;
-        acc_jump = 100;
+    constructor(height, width,canvas) {
+
+        this.acc_walk = 50;     // 歩く時の加速度
+        this.acc_jump = 100;    // ジャンプした時の加速度
+        this.roc_turn = 400;    // １回転するマウスの移動ピクセル数
+        this.canvas = canvas;
+
         this.camera = new THREE.PerspectiveCamera(45, width / height, 1, 2000000);
-        this.camera.position.set(0,0,0);
-        this.camera.rotation.set(0,0,0);
-        this.acc = { x: 0, y: 0, z: 0 };    //移動する加速度
-        this.vel = { x: 0, y: 0, z: 0 };    //移動する速度
+            this.camera.position.set(0,300,0);
+            this.camera.rotation.set(0,0,0);
+        
+        this.movement = {
+            acc: {                        //移動する加速度
+                position: {x: 0, y: 0, z: 0 },      // 場所
+                rotation: {x: 0, y: 0, z: 0 }       // 角度
+            },
+            vel: {                        //移動する速度
+                position: {x: 0, y: 0, z: 0 },      // 場所
+                rotation: {x: 0, y: 0, z: 0 }       // 角度
+            }
+        }
+
+        this.add_acc = {
+            parameter:{x:0,y:0,z:0},
+
+            position: (pos) => {
+                this.movement.vel.position.x += pos.x
+                this.movement.vel.position.y += pos.y
+                this.movement.vel.position.z += pos.z
+                console.log(pos)
+            },
+            rotation: (rot) => {
+                this.movement.vel.rotation.y = rot.y
+
+                console.log("rotation.x : "+rot.x);
+                console.log("rotation.y : "+rot.y);
+            }
+        }
+        
+
+        // キーに関する設定
         this.key = {
-            w:      this.make_key_config( 87,   ture,   false,  function(){ return( this.add_acc( 0,0,-1 * acc_walk)) }),
-            s:      this.make_key_config( 83,   ture,   false,  function(){ return( this.add_acc( 0,0,acc_walk)) }),
-            a:      this.make_key_config( 65,   ture,   false,  function(){ return( this.add_acc( -1 * acc_walk,0,0)) }),
-            d:      this.make_key_config( 68,   ture,   false,  function(){ return( this.add_acc( acc_walk,0,0)) }),
-            space:  this.make_key_config( 32,   false,  false,  function(){ return( this.add_acc( 0,acc_jump,0)) })
+
+            get_by_num: function(num){
+                for(var k in this){
+                    if(this[k].num === num){return k;}
+                }
+                return(make_key_config(null,null,null,null));
+            },
+
+            key_down: (num) => {
+                let key_tmp = this.key.get_by_num(num);
+                if(!this.key[key_tmp].key_down_flag){
+                    this.key[key_tmp].action_down(this.key[key_tmp].argment_down);
+                    this.key[key_tmp].key_down_flag = true;
+                    console.log("flag"+this.key[key_tmp].num)
+
+                }
+            },
+
+            key_up: (num) => {
+                let key_tmp = this.key.get_by_num(num);
+                if(this.key[key_tmp].key_down_flag){
+                    this.key[key_tmp].action_up(this.key[key_tmp].argment_up);
+                    this.key[key_tmp].key_down_flag = false;
+                }
+            },
+
+            w:      make_key_config( 87,   false,   false,   this.add_acc.position,    {x:0, y:0, z:-1 * this.acc_walk},    this.add_acc.position, {x:0, y:0, z:this.acc_walk}          ),
+            s:      make_key_config( 83,   false,   false,   this.add_acc.position,    {x:0, y:0, z:this.acc_walk},        this.add_acc.position, {x:0, y:0, z:-1 * this.acc_walk}     ),
+            a:      make_key_config( 65,   false,   false,   this.add_acc.position,    {x:-1 * this.acc_walk, y:0, z:0},   this.add_acc.position, {x:this.acc_walk, y:0, z:0}          ),
+            d:      make_key_config( 68,   false,   false,   this.add_acc.position,    {x:this.acc_walk, y:0, z:0},        this.add_acc.position, {x:-1 * this.acc_walk, y:0, z:0}     ),
+            space:  make_key_config( 32,   false,   false,   this.add_acc.position,    {x:0, y:this.acc_jump, z:0},),
+            esc:    make_key_config( 27,   false,   false,   ElementExitPointerLock, this.canvas )
+
         }
 
-    }
-
-    make_key_config(numb,cont,k_d_f,acti){
-        var key_tmp = {
-            num: numb,
-            continuation: cont,
-            key_down_flag: k_d_f,
-            acttion: acti
+        function make_key_config(numb,cont,k_d_f,acti_d,arg_d,acti_u,arg_u){
+            let key_tmp = {
+                num: numb,
+                continuation: cont,
+                key_down_flag: k_d_f,
+                action_down: acti_d,
+                argment_down: arg_d,
+                action_up: acti_u,
+                argment_up: arg_u
+            }
+            return(key_tmp);
         }
 
-        retuen(key_tmp);
-    }
+        // マウスに関する設定
+        this.mouse = {
+            //diff: { x: 0, y: 0,},
+            move_flag: false,
 
+            mouse_move: (e) => {
+                let rot_tmp = {x:e.movementX, y:e.movementY}
+                console.log(e)
+                this.add_acc.rotation(rot_tmp);
+            },
+
+            mouse_down: (e) => {
+                ElementRequestPointerLock(this.canvas);
+            }
+        }
+    }
+    
+
+
+
+    // 加速度を座標に変換に変換
+    acc_to_pos(){
+        // 加速度を速度に変換(位置と角度)
+        for( var axis in this.movement.acc.position ){
+
+            // 角度の角加速度を角速度，角度に変換
+            this.movement.vel.rotation[axis] += this.movement.acc.rotation[axis];
+            this.camera.rotation[axis] += ( 2 * Math.PI / this.roc_turn) * this.movement.vel.rotation[axis] 
+            this.movement.acc.rotation[axis] = 0;
+            this.movement.vel.rotation[axis] = 0;
+        }
+
+        this.camera.position.x += this.movement.vel.position.x * Math.cos(this.camera.rotation.y) + this.movement.vel.position.z * Math.sin(this.camera.rotation.y)
+        this.camera.position.z += this.movement.vel.position.z * Math.cos(this.camera.rotation.y) + -1 * this.movement.vel.position.x * Math.sin(this.camera.rotation.y)
+    }
 
 }
 
@@ -51,26 +167,15 @@ class block {
             this.boxes.add(box[i])
         }
     
-        scene.add(this.boxes);
+
     }
 }
 
 
 function init(){
 
-    aaa = {a:1,b:2,c:function(){return(bbb(1,3))}};
-    for(let key in aaa){
-        console.log("aaa."+key+"="+aaa[key])
-    }
-
-    function bbb(a,b){
-        return(a+b)
-    }
-
-    console.log("aaa.c()="+aaa.c())
-
-
     elm = document.getElementById("text");
+
 
     // サイズを指定
     const width = 960;
@@ -93,16 +198,60 @@ function init(){
     scene.add(light[0]);
     scene.add(light[1]);
 
-
     // カメラとボックスを作成
-    camera = new player(width,height);
+    camera = new player(width,height,canvas);
     box = new block(scene);
+    scene.add(box.boxes);
 
+    // イベント時に呼び出される
+    canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
+    canvas.addEventListener('keydown', onKeyDown, false);
+    canvas.addEventListener('keyup', onKeyUp, false);
+    canvas.addEventListener('mousemove', onMouseMove, false);
+    canvas.addEventListener('mousedown', onMouseDown, false);
+    canvas.addEventListener('mouseup', onMouseUp, false);
 
+    function onKeyDown(e){if(active_flag){          // キーが押されたときに動く関数
+        camera.key.key_down(e.keyCode);
+    }}
+
+    function onKeyUp(e){if(active_flag){            // キーが上げられたときに動く関数
+        camera.key.key_up(e.keyCode);
+    }}
+    
+    function onMouseMove(e){if(active_flag){        // マウスが動かされたときに動く関数
+        camera.mouse.mouse_move(e);
+    }}
+
+    function onMouseDown(e){                        // 左クリックが押されたされたときに動く関数
         
+        camera.mouse.mouse_down(e);
+    }
+
+    function onMouseUp(e){if(active_flag){          // 左クリックが上げられたときに動く関数
+        ;
+    }}
+
+    
+    tick(); // 毎チック実行する関数
+
+    function tick(){
+
+        camera.acc_to_pos()
 
 
+        // レンダリング
+        renderer.render(scene, camera.camera); 
+        requestAnimationFrame(tick);
 
+
+        elm.innerHTML = 'camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
+            '<br>acc -> x:' + camera.movement.acc.position.x + ', y:' + camera.movement.acc.position.y + ', z:' + camera.movement.acc.position.z +
+            '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
+            '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'
+
+            
+    }
 
 
 
