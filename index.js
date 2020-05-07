@@ -57,8 +57,6 @@ class player {
             //this.camera.rotation.set(Math.PI/2,0,0);
             this.camera.rotation.set(this.movement.set.rotation.x,this.movement.set.rotation.y,this.movement.set.rotation.z);
             this.camera.rotation.order = "YZX"
-            this.camera.rotation._order = "YZX"
-
 
         this.add_acc = {
             parameter:{x:0,y:0,z:0},
@@ -71,14 +69,12 @@ class player {
                     this.movement.vel.position.y += pos.y
                     on_ground = 1;
                 }
-
             },
             rotation: (rot) => {
                 this.movement.vel.rotation.x += rot.x
                 this.movement.vel.rotation.y += rot.y
             }
         }
-        
 
         // キーに関する設定
         this.key = {
@@ -97,8 +93,6 @@ class player {
                 if(!this.key[key_tmp].key_down_flag){
                     this.key[key_tmp].action_down(this.key[key_tmp].argment_down);
                     this.key[key_tmp].key_down_flag = true;
-                    console.log("flag"+this.key[key_tmp].num)
-
                 }
             },
 
@@ -118,7 +112,6 @@ class player {
             d:      make_key_config( 68,   false,   false,   this.add_acc.position,     {x:this.acc_walk, y:0, z:0},        this.add_acc.position,  {x:-1 * this.acc_walk, y:0, z:0}    ),
             space:  make_key_config( 32,   false,   false,   this.add_acc.position,     {x:0, y:this.acc_jump, z:0},        this.add_acc.position,  {x:0, y:0, z:0},                    ),
             esc:    make_key_config( 27,   false,   false,   ElementExitPointerLock,    this.canvas,                        ElementExitPointerLock, this.canvas                         )
-
         }
 
         function make_key_config(numb,cont,k_d_f,acti_d,arg_d,acti_u,arg_u){
@@ -166,12 +159,7 @@ class player {
         }
 
         this.movement.set.position.y += this.movement.vel.position.y;
-
         this.position_flag = false;
-
-        
-        
-        
 
         // 角度の角加速度を角速度，角度に変換
         if(this.mouse.move_flag){
@@ -181,13 +169,9 @@ class player {
             this.movement.vel.rotation.y = 0;
             this.mouse.move_flag = false;
         }
-
-    
-
     }
 
     moving(set){ 
-        
         for(var k in set){
             if(set[k]==this.camera.position[k] && k == "y"){
                 this.movement.vel.position[k] = 0;
@@ -280,7 +264,6 @@ class block {
 
         set_tmp.y += player_height;
         return(set_tmp);
-
     }
 }
 
@@ -343,9 +326,6 @@ function init(){
     function onMouseUp(e){if(active_flag){          // 左クリックが上げられたときに動く関数
         ;
     }}
-
-
-    console.log(camera.camera.rotation)
     
     tick(); // 毎チック実行する関数
 
