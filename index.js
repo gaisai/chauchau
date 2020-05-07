@@ -21,17 +21,19 @@ function ElementExitPointerLock(element){
 }
 
 test_hit = false;
-
+on_ground = false;
 
 class player {
     constructor(height, width,canvas) {
 
-        this.acc_walk = 50;     // 歩く時の加速度
-        this.acc_jump = 100;    // ジャンプした時の加速度
+        this.acc_walk = 1000*3 / 60;     // 歩く時の加速度
+        this.acc_jump = 1000*100 / 600;    // ジャンプした時の加速度
         this.roc_turn = 800;    // １回転するマウスの移動ピクセル数
+        this.gravity = -1 * 1000*10 / 600;
         this.canvas = canvas;
         this.position_flag = false;
         this.rotation_flag = false;
+        
 
         
         this.movement = {
@@ -44,7 +46,7 @@ class player {
                 rotation: {x: 0, y: 0, z: 0 }       // 角度
             },
             set: {
-                position: {x: 0, y: 1300, z: 0 },      // 場所
+                position: {x: 0, y: 2500, z: 0 },      // 場所
                 rotation: {x: 0, y: 0, z: 0 }       // 角度
             }
         }
@@ -62,6 +64,7 @@ class player {
                 this.movement.vel.position.x += pos.x
                 this.movement.vel.position.y += pos.y
                 this.movement.vel.position.z += pos.z
+
             },
             rotation: (rot) => {
                 this.movement.vel.rotation.y += rot.x
@@ -145,6 +148,17 @@ class player {
         
         this.movement.set.position.x += this.movement.vel.position.x * Math.cos(this.camera.rotation.y) + this.movement.vel.position.z * Math.sin(this.camera.rotation.y)
         this.movement.set.position.z += this.movement.vel.position.z * Math.cos(this.camera.rotation.y) + -1 * this.movement.vel.position.x * Math.sin(this.camera.rotation.y)
+        
+        
+        
+        if(on_ground){
+            this.movement.vel.position.y = 0;
+        }else{
+            this.add_acc.position({x:0,y:this.gravity,z:0});
+        }
+
+        this.movement.set.position.y += this.movement.vel.position.y;
+
         this.position_flag = false;
 
         // 角度の角加速度を角速度，角度に変換
@@ -156,9 +170,14 @@ class player {
     }
 
     moving(set){
+        
         for(var k in set){
-            this.camera.position[k] = set[k];
-            this.movement.set.position[k] = set[k];
+            if(set[k]==this.camera.position[k] && k == "y"){
+                this.movement.vel.position[k] = 0;
+            }else{
+                this.camera.position[k] = set[k];
+                this.movement.set.position[k] = set[k];
+            }
         }
     }
 
@@ -167,7 +186,7 @@ class player {
 
 class block {
     constructor(scene) {
-        this.field = {x:20, y:3, z:20},
+        this.field = {x:20, y:5, z:20},
         this.box_n = this.field.x;
         this.size = 1000;
         //this.boxes = new THREE.Group();    
@@ -175,23 +194,20 @@ class block {
         this.generation_rate = 0.1;
         this.box = new Array(this.field.x);;
 
-        let len_y = new Array(this.field.y);
-        let len_z = new Array(this.field.z);
-
         const geom = new THREE.Geometry();
 
         for(var i=0; i<this.field.x; i++){ 
             // this.box[i] = len_y;
             this.box[i] = new Array(this.field.y);
 
-            for(var j=0; j<this.field.y; j++){ 
+            for(var j=0; j<this.field.y+1; j++){ 
                 // this.box[i][j] = len_z;
                 this.box[i][j] = new Array(this.field.z);
 
                 for(var k=0; k<this.field.z; k++ ){
                     this.box[i][j][k] = {x:this.size*i, y:this.size*j, z:this.size*k, exist:false, mesh:false};
                     
-                    if( j == 0 || ( Math.random()<=this.generation_rate && this.box[i][j-1][k].exist ) ){
+                    if( j == 0 || ( j < 3 &&   Math.random()<=this.generation_rate && this.box[i][j-1][k].exist ) ){
                         this.box[i][j][k].exist = true;
                     }
 
@@ -213,36 +229,42 @@ class block {
     }
 
     hit_judge(prev_set, foll_set){
-        
-        console.log("start")
-        console.log(prev_set,foll_set);
+        prev_set.y -= 800;
+        foll_set.y -= 800;
         let set_tmp = {x:prev_set.x, y:prev_set.y, z:prev_set.z};
         
+        console.log(prev_set,foll_set)
         for(var axis in set_tmp){
-            console.log(axis)
             
-            set_tmp[axis] = foll_set[axis];
-            console.log(set_tmp)
-            let block_foll = this.box[Math.round(set_tmp.x/this.size)][Math.round(set_tmp.y/this.size)][Math.round(set_tmp.z/this.size)]
-            if(block_foll.exist){
+            if(foll_set[axis] > this.size * ( this.field[axis] -1 + 0.5 ) ){
                 
+                foll_set[axis] = this.size * ( this.field[axis] -1 + 0.5) - 10;
+                console.log(axis,":",foll_set[axis]);
+            }else if(foll_set[axis] < this.size * ( -0.5 )){
+                foll_set[axis] = this.size * ( -0.5) + 10;
+                console.log(axis,":",foll_set[axis]);
+            }
+
+            set_tmp[axis] = foll_set[axis];
+            let block_foll = this.box[Math.round(set_tmp.x/this.size)][Math.round((set_tmp.y)/this.size)][Math.round(set_tmp.z/this.size)]
+
+            if(block_foll.exist){
                 let block_prev = this.box[Math.round(prev_set.x/this.size)][Math.round(prev_set.y/this.size)][Math.round(prev_set.z/this.size)]
-                console.log(block_prev,block_foll);
+                if(axis=="y"){on_ground = true;}
+            
                 if(block_prev[axis]>block_foll[axis]){
                     set_tmp[axis] = (block_prev[axis]+block_foll[axis])/2 + 10;
                 }else{
                     set_tmp[axis] = (block_prev[axis]+block_foll[axis])/2 - 10;
                 }
-
+            }else{
+                if(axis=="y"){
+                    on_ground = false;
+                }
             }
-            
-            
-
         }
 
-
-
-
+        set_tmp.y += 800;
         return(set_tmp);
 
     }
@@ -321,7 +343,7 @@ function init(){
 
         // レンダリング
         renderer.render(scene, camera.camera); 
-        requestAnimationFrame(tick);
+        
 
         b = { x:Math.round(camera.movement.set.position.x/box.size), y:Math.round(camera.movement.set.position.y/box.size), z:Math.round(camera.movement.set.position.z/box.size) };
         elm.innerHTML = 'camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
@@ -330,7 +352,7 @@ function init(){
             '<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')'
             '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'
 
-            
+            requestAnimationFrame(tick);    
     }
 
 
