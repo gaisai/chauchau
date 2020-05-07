@@ -56,7 +56,8 @@ class player {
             this.camera.position.set(this.movement.set.position.x,this.movement.set.position.y,this.movement.set.position.z);
             //this.camera.rotation.set(Math.PI/2,0,0);
             this.camera.rotation.set(this.movement.set.rotation.x,this.movement.set.rotation.y,this.movement.set.rotation.z);
-            this.camera.rotation.orders = "YXZ"
+            this.camera.rotation.order = "YZX"
+            this.camera.rotation._order = "YZX"
 
 
         this.add_acc = {
@@ -168,19 +169,19 @@ class player {
 
         this.position_flag = false;
 
-
         
         
         
 
         // 角度の角加速度を角速度，角度に変換
         if(this.mouse.move_flag){
+            this.camera.rotation.x += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
             this.camera.rotation.y += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.x
-            //this.camera.rotation.x += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
             this.movement.vel.rotation.x = 0;
             this.movement.vel.rotation.y = 0;
             this.mouse.move_flag = false;
         }
+
     
 
     }
@@ -344,7 +345,7 @@ function init(){
     }}
 
 
-    console.log(camera.camera)
+    console.log(camera.camera.rotation)
     
     tick(); // 毎チック実行する関数
 
