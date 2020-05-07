@@ -20,6 +20,8 @@ function ElementExitPointerLock(element){
     return;
 }
 
+test_hit = false;
+
 
 class player {
     constructor(height, width,canvas) {
@@ -31,10 +33,6 @@ class player {
         this.position_flag = false;
         this.rotation_flag = false;
 
-        this.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 1, 2000000);
-            this.camera.position.set(0,1200,0);
-            //this.camera.rotation.set(Math.PI/2,0,0);
-            this.camera.rotation.set(0,0,0);
         
         this.movement = {
             acc: {                        //移動する加速度
@@ -44,8 +42,18 @@ class player {
             vel: {                        //移動する速度
                 position: {x: 0, y: 0, z: 0 },      // 場所
                 rotation: {x: 0, y: 0, z: 0 }       // 角度
+            },
+            set: {
+                position: {x: 0, y: 1300, z: 0 },      // 場所
+                rotation: {x: 0, y: 0, z: 0 }       // 角度
             }
         }
+
+        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 2000000);
+            this.camera.position.set(this.movement.set.position.x,this.movement.set.position.y,this.movement.set.position.z);
+            //this.camera.rotation.set(Math.PI/2,0,0);
+            this.camera.rotation.set(this.movement.set.rotation.x,this.movement.set.rotation.y,this.movement.set.rotation.z);
+
 
         this.add_acc = {
             parameter:{x:0,y:0,z:0},
@@ -132,12 +140,11 @@ class player {
     }
     
 
-
-
     // 加速度を座標に変換に変換
-    acc_to_pos(){
-        this.camera.position.x += this.movement.vel.position.x * Math.cos(this.camera.rotation.y) + this.movement.vel.position.z * Math.sin(this.camera.rotation.y)
-        this.camera.position.z += this.movement.vel.position.z * Math.cos(this.camera.rotation.y) + -1 * this.movement.vel.position.x * Math.sin(this.camera.rotation.y)
+    set_move(){
+        
+        this.movement.set.position.x += this.movement.vel.position.x * Math.cos(this.camera.rotation.y) + this.movement.vel.position.z * Math.sin(this.camera.rotation.y)
+        this.movement.set.position.z += this.movement.vel.position.z * Math.cos(this.camera.rotation.y) + -1 * this.movement.vel.position.x * Math.sin(this.camera.rotation.y)
         this.position_flag = false;
 
         // 角度の角加速度を角速度，角度に変換
@@ -145,6 +152,13 @@ class player {
             this.camera.rotation.y += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
             this.movement.vel.rotation.y = 0;
             this.mouse.move_flag = false;
+        }
+    }
+
+    moving(set){
+        for(var k in set){
+            this.camera.position[k] = set[k];
+            this.movement.set.position[k] = set[k];
         }
     }
 
@@ -156,12 +170,15 @@ class block {
         this.field = {x:20, y:3, z:20},
         this.box_n = this.field.x;
         this.size = 1000;
-        this.boxes = new THREE.Group();    
+        //this.boxes = new THREE.Group();    
+        
         this.generation_rate = 0.1;
         this.box = new Array(this.field.x);;
 
         let len_y = new Array(this.field.y);
         let len_z = new Array(this.field.z);
+
+        const geom = new THREE.Geometry();
 
         for(var i=0; i<this.field.x; i++){ 
             // this.box[i] = len_y;
@@ -179,17 +196,55 @@ class block {
                     }
 
                     if(this.box[i][j][k].exist){
-                        this.box[i][j][k].mesh = new THREE.Mesh(
-                            new THREE.BoxGeometry(this.size, this.size, this.size),
-                            new THREE.MeshLambertMaterial({color: "rgb(100,0,0)"})                
+                        const geom_tmp = new THREE.BoxGeometry(this.size, this.size, this.size);
+                        this.box[i][j][k].mesh = new THREE.Matrix4();
+                        this.box[i][j][k].mesh.makeTranslation(
+                            this.box[i][j][k].x,
+                            this.box[i][j][k].y,
+                            this.box[i][j][k].z
                         );
-                        this.box[i][j][k].mesh.position.set( this.box[i][j][k].x, this.box[i][j][k].y, this.box[i][j][k].z );
-                        this.boxes.add(this.box[i][j][k].mesh)
+                        geom.merge( geom_tmp, this.box[i][j][k].mesh);
                     }
-
                 }
             }
+            const mate = new THREE.MeshLambertMaterial({color: "rgb(100,0,0)"}) 
+            this.boxes = new THREE.Mesh(geom, mate);
         }
+    }
+
+    hit_judge(prev_set, foll_set){
+        
+        console.log("start")
+        console.log(prev_set,foll_set);
+        let set_tmp = {x:prev_set.x, y:prev_set.y, z:prev_set.z};
+        
+        for(var axis in set_tmp){
+            console.log(axis)
+            
+            set_tmp[axis] = foll_set[axis];
+            console.log(set_tmp)
+            let block_foll = this.box[Math.round(set_tmp.x/this.size)][Math.round(set_tmp.y/this.size)][Math.round(set_tmp.z/this.size)]
+            if(block_foll.exist){
+                
+                let block_prev = this.box[Math.round(prev_set.x/this.size)][Math.round(prev_set.y/this.size)][Math.round(prev_set.z/this.size)]
+                console.log(block_prev,block_foll);
+                if(block_prev[axis]>block_foll[axis]){
+                    set_tmp[axis] = (block_prev[axis]+block_foll[axis])/2 + 10;
+                }else{
+                    set_tmp[axis] = (block_prev[axis]+block_foll[axis])/2 - 10;
+                }
+
+            }
+            
+            
+
+        }
+
+
+
+
+        return(set_tmp);
+
     }
 }
 
@@ -223,17 +278,6 @@ function init(){
     camera = new player(width,height,canvas);
     box = new block(scene);
     scene.add(box.boxes);
-
-    /*
-    boxes = new THREE.Group()
-    box = new THREE.Mesh(
-        new THREE.BoxGeometry(4000,200,4000),
-        new THREE.MeshLambertMaterial({color: "rgb(100,0,0)"})
-    );
-    boxes.add(box)
-    scene.add(boxes);
-    */
-
 
     // イベント時に呼び出される
     canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
@@ -270,16 +314,20 @@ function init(){
     function tick(){
 
         if(active_flag){
-            camera.acc_to_pos()
+            camera.set_move();
+            camera.moving(box.hit_judge(camera.camera.position, camera.movement.set.position));
+
         }
 
         // レンダリング
         renderer.render(scene, camera.camera); 
         requestAnimationFrame(tick);
 
+        b = { x:Math.round(camera.movement.set.position.x/box.size), y:Math.round(camera.movement.set.position.y/box.size), z:Math.round(camera.movement.set.position.z/box.size) };
         elm.innerHTML = 'camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
             '<br>acc -> x:' + camera.movement.acc.position.x + ', y:' + camera.movement.acc.position.y + ', z:' + camera.movement.acc.position.z +
             '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
+            '<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')'
             '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'
 
             
