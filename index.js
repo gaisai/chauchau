@@ -4,7 +4,8 @@ let active_flag = false;
 
 // サイズを指定
 const width = window.innerWidth;
-const height = window.innerHeight/4*3;
+const height = window.innerHeight/5*4;
+const player_height = 300;
 
 function ElementRequestPointerLock(element){
     element["requestPointerLock"]();
@@ -29,7 +30,7 @@ class player {
         this.acc_walk = 1000*3 / 60;     // 歩く時の加速度
         this.acc_jump = 1000*150 / 600;    // ジャンプした時の加速度
         this.roc_turn = 800;    // １回転するマウスの移動ピクセル数
-        this.gravity = -1 * 1000*10 / 600;
+        this.gravity = -1 * 1000*8 / 600;
         this.canvas = canvas;
         this.position_flag = false;
         this.rotation_flag = false;
@@ -46,15 +47,16 @@ class player {
                 rotation: {x: 0, y: 0, z: 0 }       // 角度
             },
             set: {
-                position: {x: 0, y: 2500, z: 0 },      // 場所
-                rotation: {x: 0, y: 0, z: 0 }       // 角度
+                position: {x: 0, y: 4000, z: 0 },      // 場所
+                rotation: {x: 0, y: Math.PI/2, z: 0 }       // 角度
             }
         }
 
-        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 2000000);
+        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / (window.innerHeight/5*4), 1, 2000000);
             this.camera.position.set(this.movement.set.position.x,this.movement.set.position.y,this.movement.set.position.z);
             //this.camera.rotation.set(Math.PI/2,0,0);
             this.camera.rotation.set(this.movement.set.rotation.x,this.movement.set.rotation.y,this.movement.set.rotation.z);
+            this.camera.rotation.orders = "YXZ"
 
 
         this.add_acc = {
@@ -71,7 +73,8 @@ class player {
 
             },
             rotation: (rot) => {
-                this.movement.vel.rotation.y += rot.x
+                this.movement.vel.rotation.x += rot.x
+                this.movement.vel.rotation.y += rot.y
             }
         }
         
@@ -144,6 +147,7 @@ class player {
                 ElementRequestPointerLock(this.canvas);
             }
         }
+        this.camera.useQuaternion = true;
     }
     
 
@@ -153,26 +157,32 @@ class player {
         this.movement.set.position.x += this.movement.vel.position.x * Math.cos(this.camera.rotation.y) + this.movement.vel.position.z * Math.sin(this.camera.rotation.y)
         this.movement.set.position.z += this.movement.vel.position.z * Math.cos(this.camera.rotation.y) + -1 * this.movement.vel.position.x * Math.sin(this.camera.rotation.y)
         
-        
-        
         if(on_ground <= 1 ){
             this.add_acc.position({x:0,y:this.gravity,z:0});
         }else{
             on_ground = 2
             this.movement.vel.position.y = this.gravity;
         }
-        
 
         this.movement.set.position.y += this.movement.vel.position.y;
 
         this.position_flag = false;
 
+
+        
+        
+        
+
         // 角度の角加速度を角速度，角度に変換
         if(this.mouse.move_flag){
-            this.camera.rotation.y += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
+            this.camera.rotation.y += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.x
+            this.camera.rotation.x += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
+            this.movement.vel.rotation.x = 0;
             this.movement.vel.rotation.y = 0;
             this.mouse.move_flag = false;
         }
+    
+
     }
 
     moving(set){
@@ -192,7 +202,7 @@ class player {
 
 class block {
     constructor(scene) {
-        this.field = {x:20, y:5, z:20},
+        this.field = {x:30, y:5, z:30},
         this.box_n = this.field.x;
         this.size = 1000;
         //this.boxes = new THREE.Group();    
@@ -235,11 +245,10 @@ class block {
     }
 
     hit_judge(prev_set, foll_set){
-        prev_set.y -= 800;
-        foll_set.y -= 800;
+        prev_set.y -= player_height;
+        foll_set.y -= player_height;
         let set_tmp = {x:prev_set.x, y:prev_set.y, z:prev_set.z};
-        
-        console.log(prev_set,foll_set)
+    
         for(var axis in set_tmp){
             
             if(foll_set[axis] > this.size * ( this.field[axis] -1 + 0.5 ) ){
@@ -268,7 +277,7 @@ class block {
             }
         }
 
-        set_tmp.y += 800;
+        set_tmp.y += player_height;
         return(set_tmp);
 
     }
@@ -334,6 +343,8 @@ function init(){
         ;
     }}
 
+
+    console.log(camera.camera)
     
     tick(); // 毎チック実行する関数
 
@@ -353,8 +364,9 @@ function init(){
         elm.innerHTML = 'camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
             '<br>acc -> x:' + camera.movement.acc.position.x + ', y:' + camera.movement.acc.position.y + ', z:' + camera.movement.acc.position.z +
             '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
-            '<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')' + on_ground +
-            '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'
+            //'<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')' + on_ground +
+            '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'+
+            '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI'
 
             requestAnimationFrame(tick);    
     }
