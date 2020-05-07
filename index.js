@@ -186,7 +186,7 @@ class player {
 
     }
 
-    moving(set){
+    moving(set){ 
         
         for(var k in set){
             if(set[k]==this.camera.position[k] && k == "y"){
