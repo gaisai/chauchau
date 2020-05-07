@@ -176,7 +176,7 @@ class player {
         // 角度の角加速度を角速度，角度に変換
         if(this.mouse.move_flag){
             this.camera.rotation.y += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.x
-            this.camera.rotation.x += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
+            //this.camera.rotation.x += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
             this.movement.vel.rotation.x = 0;
             this.movement.vel.rotation.y = 0;
             this.mouse.move_flag = false;
