@@ -21,13 +21,13 @@ function ElementExitPointerLock(element){
 }
 
 test_hit = false;
-on_ground = false;
+on_ground = 0;
 
 class player {
     constructor(height, width,canvas) {
 
         this.acc_walk = 1000*3 / 60;     // 歩く時の加速度
-        this.acc_jump = 1000*100 / 600;    // ジャンプした時の加速度
+        this.acc_jump = 1000*150 / 600;    // ジャンプした時の加速度
         this.roc_turn = 800;    // １回転するマウスの移動ピクセル数
         this.gravity = -1 * 1000*10 / 600;
         this.canvas = canvas;
@@ -62,8 +62,12 @@ class player {
 
             position: (pos) => {
                 this.movement.vel.position.x += pos.x
-                this.movement.vel.position.y += pos.y
                 this.movement.vel.position.z += pos.z
+
+                if((on_ground > 0 && pos.y > 0 ) || ( on_ground == 0 && pos.y < 0 ) ){
+                    this.movement.vel.position.y += pos.y
+                    on_ground = 1;
+                }
 
             },
             rotation: (rot) => {
@@ -108,7 +112,7 @@ class player {
             s:      make_key_config( 83,   false,   false,   this.add_acc.position,     {x:0, y:0, z:this.acc_walk},        this.add_acc.position,  {x:0, y:0, z:-1 * this.acc_walk}    ),
             a:      make_key_config( 65,   false,   false,   this.add_acc.position,     {x:-1 * this.acc_walk, y:0, z:0},   this.add_acc.position,  {x:this.acc_walk, y:0, z:0}         ),
             d:      make_key_config( 68,   false,   false,   this.add_acc.position,     {x:this.acc_walk, y:0, z:0},        this.add_acc.position,  {x:-1 * this.acc_walk, y:0, z:0}    ),
-            space:  make_key_config( 32,   false,   false,   this.add_acc.position,     {x:0, y:this.acc_jump, z:0},        this.add_acc.position,  {x:0, y:this.acc_jump, z:0},        ),
+            space:  make_key_config( 32,   false,   false,   this.add_acc.position,     {x:0, y:this.acc_jump, z:0},        this.add_acc.position,  {x:0, y:0, z:0},                    ),
             esc:    make_key_config( 27,   false,   false,   ElementExitPointerLock,    this.canvas,                        ElementExitPointerLock, this.canvas                         )
 
         }
@@ -151,11 +155,13 @@ class player {
         
         
         
-        if(on_ground){
-            this.movement.vel.position.y = 0;
-        }else{
+        if(on_ground <= 1 ){
             this.add_acc.position({x:0,y:this.gravity,z:0});
+        }else{
+            on_ground = 2
+            this.movement.vel.position.y = this.gravity;
         }
+        
 
         this.movement.set.position.y += this.movement.vel.position.y;
 
@@ -191,7 +197,7 @@ class block {
         this.size = 1000;
         //this.boxes = new THREE.Group();    
         
-        this.generation_rate = 0.1;
+        this.generation_rate = 0.3;
         this.box = new Array(this.field.x);;
 
         const geom = new THREE.Geometry();
@@ -250,7 +256,7 @@ class block {
 
             if(block_foll.exist){
                 let block_prev = this.box[Math.round(prev_set.x/this.size)][Math.round(prev_set.y/this.size)][Math.round(prev_set.z/this.size)]
-                if(axis=="y"){on_ground = true;}
+                if(axis=="y"){on_ground ++;}
             
                 if(block_prev[axis]>block_foll[axis]){
                     set_tmp[axis] = (block_prev[axis]+block_foll[axis])/2 + 10;
@@ -258,9 +264,7 @@ class block {
                     set_tmp[axis] = (block_prev[axis]+block_foll[axis])/2 - 10;
                 }
             }else{
-                if(axis=="y"){
-                    on_ground = false;
-                }
+                if(axis=="y"){on_ground = 0;}
             }
         }
 
