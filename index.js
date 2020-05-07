@@ -54,7 +54,6 @@ class player {
 
         this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / (window.innerHeight/5*4), 1, 2000000);
             this.camera.position.set(this.movement.set.position.x,this.movement.set.position.y,this.movement.set.position.z);
-            //this.camera.rotation.set(Math.PI/2,0,0);
             this.camera.rotation.set(this.movement.set.rotation.x,this.movement.set.rotation.y,this.movement.set.rotation.z);
             this.camera.rotation.order = "YZX"
 
