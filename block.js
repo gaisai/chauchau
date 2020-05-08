@@ -93,8 +93,6 @@ class block {
         
         if(this.on_ground == 0){
             dist.y = 0;
-            //dist.x = 0;
-            //dist.z = 0;
             this.vel.x = 0;
             this.vel.z = 0;
         }else{
