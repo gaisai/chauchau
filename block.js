@@ -5,10 +5,10 @@ class block {
     }
 
     make_floor(){
-        this.field = {x:20, y:10, z:20},
-        this.size = 2000;
+        this.field = {x:50, y:50, z:50},
+        this.size = 1000;
 
-        const generation_rate = 0.3;
+        const generation_rate = 0.5;
         const geom = new THREE.Geometry();
 
         this.box = new Array(this.field.x);;
@@ -23,7 +23,7 @@ class block {
                 for(var k=0; k<this.field.z; k++ ){
                     this.box[i][j][k] = {x:this.size*i, y:this.size*j, z:this.size*k, exist:false, mesh:false};
                     
-                    if( j == 0 || ( j < this.field.y - 2 &&   Math.random()<=generation_rate && this.box[i][j-1][k].exist ) ){
+                    if( j == 0 || ( j < this.field.y - 5 &&   Math.random() <= generation_rate && this.box[i][j-1][k].exist ) ){
                         this.box[i][j][k].exist = true;
                     }
 
@@ -56,8 +56,11 @@ class block {
         this.hit_position = {x:this.size/2, y:this.size/2,z:this.size/2}
         this.acc = {x:0, y:gravity, z:0};
         this.vel = {x:0, y:0, z:0};
-        this.move_max = 1000*200 / 600;
-        
+        this.move_max = 1000 / 600;
+        this.on_ground = 0;
+        this.counter = 0;
+
+
         const geometry = new THREE.SphereGeometry( this.size, 100,100 );
         const material = new THREE.MeshLambertMaterial( {color: "rgb(0,100,0)" } );
         this.sphere = new THREE.Mesh( geometry, material );
@@ -73,38 +76,55 @@ class block {
     move_sphere(floor,player){
         let move_tmp = {x:0,y:0,z:0};
         let hit = {x:0,y:0,z:0};
+        let rand = Math.random();
+
+
+        let dist = {
+            /*
+            x:(player.camera.position.x - this.sphere.position.x) / (floor.size*floor.field.x) * player.acc_walk,
+            y:(player.camera.position.y - this.sphere.position.y) / Math.pow(10,3) + floor.size,
+            z:(player.camera.position.z - this.sphere.position.z) / (floor.size*floor.field.x) * player.acc_walk
+            */
+            x:(player.camera.position.x - this.sphere.position.x) / floor.size * this.counter,
+            y:(player.camera.position.y - this.sphere.position.y) / floor.field.y + (floor.size *  floor.field.y / player.acc_walk)  ,
+            z:(player.camera.position.z - this.sphere.position.z) / floor.size * this.counter
+            
+        }
+        
+        if(this.on_ground == 0){
+            dist.y = 0;
+            //dist.x = 0;
+            //dist.z = 0;
+            this.vel.x = 0;
+            this.vel.z = 0;
+        }else{
+            this.vel.y = 0;
+            this.vel.x = 0;
+            this.vel.z = 0;
+        }
 
         for(var axis in this.acc){
-            
-            
-            if(this.on_ground==0){
-                this.acc[axis] = 0;    
-            }else{
-                this.acc[axis] = (player.camera.position[axis] - this.sphere.position[axis] ) * (Math.random()+1.5)  ;
-            }
-
+           this.acc[axis] = dist[axis];
+       
             if(axis == "y"){
-
                 this.acc[axis] += gravity;
-            }else{
-                
             }
-
 
             this.vel[axis] += this.acc[axis];
-            if(this.vel[axis] > this.move_max){
-                this.vel[axis] = this.move_max;
-            }else if(this.vel[axis] < -1 * this.move_max){
-                this.vel[axis] = -1*this.move_max;
-            }
-            
             move_tmp[axis] = this.sphere.position[axis] + this.vel[axis];
         }
 
         move_tmp =floor.hit_judge(this.sphere.position, move_tmp, hit ,this.on_ground, true)
         enemy.sphere.position.set(move_tmp.x,move_tmp.y,move_tmp.z)
         this.on_ground = move_tmp.on_ground
-        console.log("s on ground:"+this.on_ground)
+        //console.log("s on ground:"+this.on_ground)
+
+        if(this.counter < floor.size){
+            this.counter += 0.005;
+        }
+       
+        
+
 
     } 
 

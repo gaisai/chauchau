@@ -150,10 +150,7 @@ class player {
 
 
 
-        console.log(
-            "move before:" + this.movement.set.position.x + "," +  + this.movement.set.position.y + ","  + this.movement.set.position.z + "," 
-
-        )
+        //console.log("move before:" + this.movement.set.position.x + "," +  + this.movement.set.position.y + ","  + this.movement.set.position.z + "," )
 
         // 角度の角加速度を角速度，角度に変換
         if(this.mouse.move_flag){

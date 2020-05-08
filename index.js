@@ -4,7 +4,7 @@ let active_flag = false;
 
 // サイズを指定
 const width = window.innerWidth;
-const height = window.innerHeight/5*4;
+const height = window.innerHeight/5*3;
 const player_height = 800;
 const gravity = -1 * 1000*8 / 600;
 
@@ -118,7 +118,9 @@ function init(){
             '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
             //'<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')' + on_ground +
             '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'+
-            '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI'
+            '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI' +
+            '<br>enemy x:' + enemy.sphere.position.x + ', y:' + enemy.sphere.position.y + ', z:' + enemy.sphere.position.z +
+            '<br>enemy vel x:' + enemy.vel.x + ', y:' + enemy.vel.y + ', z:' + enemy.vel.z 
 
         if(distance(camera.camera.position,enemy.sphere.position) < 2000 ){
             elm.innerHTML = 'YOU LOSE<br>Press "R" to restart'
@@ -137,11 +139,7 @@ function init(){
 function distance( a, b ){
     
     dis = Math.sqrt( Math.pow((a.x - b.x),2) + Math.pow((a.y - b.y),2) + Math.pow((a.z - b.z),2))
-    console.log(
-        "distance = "+dis + 
-        "\n" + a.x +","+ a.y + "," + a.z +
-        "\n" + b.x +","+ b.y + "," + b.z
-    );
+    //console.log("distance = "+dis + "\n" + a.x +","+ a.y + "," + a.z +"\n" + b.x +","+ b.y + "," + b.z);
     return(dis)
 
 }
