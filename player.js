@@ -65,7 +65,7 @@ class player {
 
             key_down: (num) => {
                 let key_tmp = this.key.get_by_num(num);
-                console.log("key_tmp:"+key_tmp)
+                console.log("key_tmp:"+key_tmp+ num)
                 if(!key_tmp){return}
                 if(!this.key[key_tmp].key_down_flag){
                     this.key[key_tmp].action_down(this.key[key_tmp].argment_down);
@@ -87,6 +87,7 @@ class player {
             s:      make_key_config( 83,   false,   false,   this.add_acc.position,     {x:0, y:0, z:this.acc_walk},        this.add_acc.position,  {x:0, y:0, z:-1 * this.acc_walk}    ),
             a:      make_key_config( 65,   false,   false,   this.add_acc.position,     {x:-1 * this.acc_walk, y:0, z:0},   this.add_acc.position,  {x:this.acc_walk, y:0, z:0}         ),
             d:      make_key_config( 68,   false,   false,   this.add_acc.position,     {x:this.acc_walk, y:0, z:0},        this.add_acc.position,  {x:-1 * this.acc_walk, y:0, z:0}    ),
+            r:      make_key_config( 82,   false,   false,   this.restart,              "",                                 function(){;},          ""                                  ),
             space:  make_key_config( 32,   false,   false,   this.add_acc.position,     {x:0, y:this.acc_jump, z:0},        this.add_acc.position,  {x:0, y:0, z:0},                    ),
             esc:    make_key_config( 27,   false,   false,   ElementExitPointerLock,    this.canvas,                        ElementExitPointerLock, this.canvas                         )
         }
@@ -121,6 +122,12 @@ class player {
         this.camera.useQuaternion = true;
     }
     
+    restart(){
+        if(!playing){
+            init();
+        }
+
+    }
 
     // 加速度を座標に変換に変換
     set_move(){

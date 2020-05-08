@@ -22,12 +22,14 @@ function ElementExitPointerLock(element){
     return;
 }
 
+playing = false;
 test_hit = false;
 
 
 
 
 function init(){
+    playing = true;
     const start = performance.now();
     elm = document.getElementById("text");
 
@@ -119,7 +121,8 @@ function init(){
             '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI'
 
         if(distance(camera.camera.position,enemy.sphere.position) < 2000 ){
-            elm.innerHTML = "YOU LOSE"
+            elm.innerHTML = 'YOU LOSE<br>Press "R" to restart'
+            playing = false;
             return
         }
         requestAnimationFrame(tick);    
