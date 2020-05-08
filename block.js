@@ -80,7 +80,7 @@ class block {
             if(this.on_ground==0){
                 this.acc[axis] = 0;    
             }else{
-                this.acc[axis] = player.camera.position[axis] - this.sphere.position[axis] + (Math.random() - 0.5) / (player.camera.position[axis] - this.sphere.position[axis])/ 1000 ;
+                this.acc[axis] = (player.camera.position[axis] - this.sphere.position[axis] ) * (Math.random()+1.5)  ;
             }
 
             if(axis == "y"){
