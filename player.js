@@ -26,7 +26,7 @@ class player {
             },
             set: {
                 position: {x: 0, y: 3000, z: 0 },      // 場所
-                rotation: {x: 0, y: Math.PI/2, z: 0 }       // 角度
+                rotation: {x: 0, y: -1 * Math.PI/4*3, z: 0 }       // 角度
             }
         }
 
