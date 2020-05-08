@@ -61,9 +61,18 @@ function init(){
     scene.add(box.boxes);
 
 
-    enemy = new block();
-    enemy.make_sphere(box);
-    scene.add(enemy.sphere);
+    fantom = new block();
+    fantom.make_sphere(box);
+    scene.add(fantom.sphere);
+
+    tindalos = new block();
+    tindalos.make_sphere(box);
+    scene.add(tindalos.sphere);
+
+
+
+
+    
 
     // イベント時に呼び出される
     canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
@@ -103,8 +112,8 @@ function init(){
         if(active_flag){
             camera.set_move();
             camera.moving( box.hit_judge( camera.camera.position, camera.movement.set.position, camera.hit_position ,camera.on_ground ,true));
-            enemy.move_sphere(box,camera);
-
+            fantom.hopping_sphere(box,camera);
+            tindalos.crawling_sphere(box,camera);
         }
 
         // レンダリング
@@ -119,10 +128,11 @@ function init(){
             //'<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')' + on_ground +
             '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'+
             '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI' +
-            '<br>enemy x:' + enemy.sphere.position.x + ', y:' + enemy.sphere.position.y + ', z:' + enemy.sphere.position.z +
-            '<br>enemy vel x:' + enemy.vel.x + ', y:' + enemy.vel.y + ', z:' + enemy.vel.z 
+            '<br>fantom x:' + fantom.sphere.position.x + ', y:' + fantom.sphere.position.y + ', z:' + fantom.sphere.position.z +
+            '<br>fantom vel x:' + fantom.vel.x + ', y:' + fantom.vel.y + ', z:' + fantom.vel.z +
+            '<br>tindalos x:' + tindalos.sphere.position.x + ', y:' + tindalos.sphere.position.y + ', z:' + tindalos.sphere.position.z
 
-        if(distance(camera.camera.position,enemy.sphere.position) < 2000 ){
+        if(distance(camera.camera.position,fantom.sphere.position) < 2000 || distance(camera.camera.position,tindalos.sphere.position) < 2000){
             elm.innerHTML = 'YOU LOSE<br>Press "R" to restart'
             playing = false;
             return

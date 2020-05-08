@@ -59,10 +59,10 @@ class block {
         this.move_max = 1000 / 600;
         this.on_ground = 0;
         this.counter = 0;
-
+        let color = "rgb(" + (Math.random() * 250) + "," + (Math.random() * 250) + "," + (Math.random() * 250) + ")"
 
         const geometry = new THREE.SphereGeometry( this.size, 100,100 );
-        const material = new THREE.MeshLambertMaterial( {color: "rgb(0,100,0)" } );
+        const material = new THREE.MeshLambertMaterial( {color:  color} );
         this.sphere = new THREE.Mesh( geometry, material );
         
 
@@ -73,22 +73,15 @@ class block {
 
     }
 
-    move_sphere(floor,player){
+    hopping_sphere(floor,player){
         let move_tmp = {x:0,y:0,z:0};
         let hit = {x:0,y:0,z:0};
         let rand = Math.random();
 
-
         let dist = {
-            /*
-            x:(player.camera.position.x - this.sphere.position.x) / (floor.size*floor.field.x) * player.acc_walk,
-            y:(player.camera.position.y - this.sphere.position.y) / Math.pow(10,3) + floor.size,
-            z:(player.camera.position.z - this.sphere.position.z) / (floor.size*floor.field.x) * player.acc_walk
-            */
             x:(player.camera.position.x - this.sphere.position.x) / floor.size * this.counter,
             y:(player.camera.position.y - this.sphere.position.y) / floor.field.y + (floor.size *  floor.field.y / player.acc_walk)  ,
             z:(player.camera.position.z - this.sphere.position.z) / floor.size * this.counter
-            
         }
         
         if(this.on_ground == 0){
@@ -113,20 +106,32 @@ class block {
         }
 
         move_tmp =floor.hit_judge(this.sphere.position, move_tmp, hit ,this.on_ground, true)
-        enemy.sphere.position.set(move_tmp.x,move_tmp.y,move_tmp.z)
+        this.sphere.position.set(move_tmp.x,move_tmp.y,move_tmp.z)
         this.on_ground = move_tmp.on_ground
         //console.log("s on ground:"+this.on_ground)
 
         if(this.counter < floor.size){
             this.counter += 0.005;
         }
-       
-        
-
-
     } 
 
+    crawling_sphere(floor,player){
+        let foll = {
+            x:(player.camera.position.x - this.sphere.position.x) ,
+            y:(player.camera.position.y - this.sphere.position.y) ,
+            z:(player.camera.position.z - this.sphere.position.z) 
+        }
 
+        let dist = Math.sqrt( Math.pow(foll.x,2) + Math.pow(foll.y,2) + Math.pow(foll.z,2));
+        console.log(            
+            "dist;" + dist + 
+            "\np: "  + player.camera.position.x + "," + player.camera.position.y + "," +player.camera.position.z + 
+            "\nt: "  + this.sphere.position.x + "," + this.sphere.position.y + "," +this.sphere.position.z 
+        )
+        for(let axis in foll){
+            this.sphere.position[axis] += foll[axis] / dist * 10
+        }
+    }
 
 
     hit_judge(prev_set, foll_set, hit_position, on_ground, on_ground_check){

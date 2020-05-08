@@ -156,6 +156,13 @@ class player {
         if(this.mouse.move_flag){
             this.camera.rotation.x += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.y
             this.camera.rotation.y += ( -2 * Math.PI / this.roc_turn) * this.movement.vel.rotation.x
+            if(this.camera.rotation.x > Math.PI / 2){
+                this.camera.rotation.x = Math.PI / 2;
+            }else if(this.camera.rotation.x < -1 * Math.PI /2){
+                this.camera.rotation.x = -1 * Math.PI / 2 ;
+            }
+
+            
             this.movement.vel.rotation.x = 0;
             this.movement.vel.rotation.y = 0;
             this.mouse.move_flag = false;
