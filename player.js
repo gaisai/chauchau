@@ -1,13 +1,17 @@
 class player {
-    constructor(height, width,canvas) {
+    constructor(canvas) {
 
         this.acc_walk = 1000*3 / 60;     // 歩く時の加速度
         this.acc_jump = 1000*150 / 600;    // ジャンプした時の加速度
         this.roc_turn = 800;    // １回転するマウスの移動ピクセル数
-        this.gravity = -1 * 1000*8 / 600;
+        this.on_ground = 0;
+        this.hit_position = {x:0,y:800,z:0};
+        
+        
         this.canvas = canvas;
         this.position_flag = false;
         this.rotation_flag = false;
+        
         
 
         
@@ -21,12 +25,12 @@ class player {
                 rotation: {x: 0, y: 0, z: 0 }       // 角度
             },
             set: {
-                position: {x: 0, y: 4000, z: 0 },      // 場所
+                position: {x: 0, y: 3000, z: 0 },      // 場所
                 rotation: {x: 0, y: Math.PI/2, z: 0 }       // 角度
             }
         }
 
-        this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / (window.innerHeight/5*4), 1, 2000000);
+        this.camera = new THREE.PerspectiveCamera(90, width / height, 1, 2000000);
             this.camera.position.set(this.movement.set.position.x,this.movement.set.position.y,this.movement.set.position.z);
             this.camera.rotation.set(this.movement.set.rotation.x,this.movement.set.rotation.y,this.movement.set.rotation.z);
             this.camera.rotation.order = "YZX"
@@ -38,9 +42,9 @@ class player {
                 this.movement.vel.position.x += pos.x
                 this.movement.vel.position.z += pos.z
 
-                if((on_ground > 0 && pos.y > 0 ) || ( on_ground == 0 && pos.y < 0 ) ){
+                if((this.on_ground > 0 && pos.y > 0 ) || ( this.on_ground == 0 && pos.y < 0 ) ){
                     this.movement.vel.position.y += pos.y
-                    on_ground = 1;
+                    this.on_ground = 1;
                 }
             },
             rotation: (rot) => {
@@ -124,15 +128,25 @@ class player {
         this.movement.set.position.x += this.movement.vel.position.x * Math.cos(this.camera.rotation.y) + this.movement.vel.position.z * Math.sin(this.camera.rotation.y)
         this.movement.set.position.z += this.movement.vel.position.z * Math.cos(this.camera.rotation.y) + -1 * this.movement.vel.position.x * Math.sin(this.camera.rotation.y)
         
-        if(on_ground <= 1 ){
-            this.add_acc.position({x:0,y:this.gravity,z:0});
+
+
+        if(this.on_ground <= 1 ){
+            this.add_acc.position({x:0,y:gravity,z:0});
         }else{
-            on_ground = 2
-            this.movement.vel.position.y = this.gravity;
+            this.on_ground = 2
+            this.movement.vel.position.y = gravity;
         }
 
         this.movement.set.position.y += this.movement.vel.position.y;
         this.position_flag = false;
+
+
+
+
+        console.log(
+            "move before:" + this.movement.set.position.x + "," +  + this.movement.set.position.y + ","  + this.movement.set.position.z + "," 
+
+        )
 
         // 角度の角加速度を角速度，角度に変換
         if(this.mouse.move_flag){
@@ -145,6 +159,9 @@ class player {
     }
 
     moving(set){ 
+
+        this.on_ground = set.on_ground;
+        delete set.on_ground;
         for(var k in set){
             if(set[k]==this.camera.position[k] && k == "y"){
                 this.movement.vel.position[k] = 0;

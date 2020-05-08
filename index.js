@@ -5,7 +5,8 @@ let active_flag = false;
 // サイズを指定
 const width = window.innerWidth;
 const height = window.innerHeight/5*4;
-const player_height = 300;
+const player_height = 800;
+const gravity = -1 * 1000*8 / 600;
 
 function ElementRequestPointerLock(element){
     element["requestPointerLock"]();
@@ -22,8 +23,6 @@ function ElementExitPointerLock(element){
 }
 
 test_hit = false;
-on_ground = 0;
-
 
 
 
@@ -54,9 +53,15 @@ function init(){
     }
 
     // カメラとボックスを作成
-    camera = new player(width,height,canvas);
-    box = new block(scene);
+    camera = new player(canvas);
+    box = new block();
+    box.make_floor();
     scene.add(box.boxes);
+
+
+    enemy = new block();
+    enemy.make_sphere(box);
+    scene.add(enemy.sphere);
 
     // イベント時に呼び出される
     canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
@@ -86,6 +91,8 @@ function init(){
     function onMouseUp(e){if(active_flag){          // 左クリックが上げられたときに動く関数
         ;
     }}
+
+
     
     tick(); // 毎チック実行する関数
 
@@ -93,7 +100,8 @@ function init(){
 
         if(active_flag){
             camera.set_move();
-            camera.moving(box.hit_judge(camera.camera.position, camera.movement.set.position));
+            camera.moving( box.hit_judge( camera.camera.position, camera.movement.set.position, camera.hit_position ,camera.on_ground ,true));
+            enemy.move_sphere(box,camera);
 
         }
 
@@ -102,6 +110,7 @@ function init(){
         
 
         b = { x:Math.round(camera.movement.set.position.x/box.size), y:Math.round(camera.movement.set.position.y/box.size), z:Math.round(camera.movement.set.position.z/box.size) };
+
         elm.innerHTML = 'camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
             '<br>acc -> x:' + camera.movement.acc.position.x + ', y:' + camera.movement.acc.position.y + ', z:' + camera.movement.acc.position.z +
             '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
@@ -109,10 +118,29 @@ function init(){
             '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'+
             '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI'
 
-            requestAnimationFrame(tick);    
+        if(distance(camera.camera.position,enemy.sphere.position) < 2000 ){
+            elm.innerHTML = "YOU LOSE"
+            return
+        }
+        requestAnimationFrame(tick);    
     }
 
 
     console.log('end: ', performance.now() - start, 'ms');
 }
+
+
+
+function distance( a, b ){
+    
+    dis = Math.sqrt( Math.pow((a.x - b.x),2) + Math.pow((a.y - b.y),2) + Math.pow((a.z - b.z),2))
+    console.log(
+        "distance = "+dis + 
+        "\n" + a.x +","+ a.y + "," + a.z +
+        "\n" + b.x +","+ b.y + "," + b.z
+    );
+    return(dis)
+
+}
+
 
