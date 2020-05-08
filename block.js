@@ -80,17 +80,11 @@ class block {
             if(this.on_ground==0){
                 this.acc[axis] = 0;    
             }else{
-                this.acc[axis] = player.camera.position[axis] - this.sphere.position[axis] + (Math.random() - 0.5)*this.move_max/10/player.camera.position[axis] - this.sphere.position[axis] ;
+                this.acc[axis] = player.camera.position[axis] - this.sphere.position[axis] + (Math.random() - 0.5) / (player.camera.position[axis] - this.sphere.position[axis])/ 1000 ;
             }
 
-            /*
-            if(this.acc[axis] > this.move_max){
-                this.acc[axis] = this.move_max;
-            }else if(this.acc[axis] < -1 * this.move_max){
-                this.acc[axis] = -1 * this.move_max;
-            }
-*/
             if(axis == "y"){
+
                 this.acc[axis] += gravity;
             }else{
                 
@@ -112,7 +106,7 @@ class block {
         this.on_ground = move_tmp.on_ground
         console.log("s on ground:"+this.on_ground)
 
-    }
+    } 
 
 
 
