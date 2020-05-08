@@ -59,7 +59,7 @@ class block {
         this.move_max = 1000 / 600;
         this.on_ground = 0;
         this.counter = 0;
-        let color = "rgb(" + (Math.random() * 250) + "," + (Math.random() * 250) + "," + (Math.random() * 250) + ")"
+        let color = "rgb(0,100,0)"
 
         const geometry = new THREE.SphereGeometry( this.size, 100,100 );
         const material = new THREE.MeshLambertMaterial( {color:  color} );
@@ -111,7 +111,7 @@ class block {
         //console.log("s on ground:"+this.on_ground)
 
         if(this.counter < floor.size){
-            this.counter += 0.005;
+            this.counter += 0.001;
         }
     } 
 
@@ -129,8 +129,12 @@ class block {
             "\nt: "  + this.sphere.position.x + "," + this.sphere.position.y + "," +this.sphere.position.z 
         )
         for(let axis in foll){
-            this.sphere.position[axis] += foll[axis] / dist * 10
+            this.sphere.position[axis] += foll[axis] / dist * this.counter
         }
+        if(this.counter < player.acc_walk){
+            this.counter += 0.01;
+        }
+
     }
 
 

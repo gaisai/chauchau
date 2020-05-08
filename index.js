@@ -128,12 +128,13 @@ function init(){
             //'<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')' + on_ground +
             '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'+
             '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI' +
-            '<br>fantom x:' + fantom.sphere.position.x + ', y:' + fantom.sphere.position.y + ', z:' + fantom.sphere.position.z +
+            '<br>fantom x:' + fantom.sphere.position.x + ', y:' + fantom.sphere.position.y + ', z:' + fantom.sphere.position.z + ", counter:" + fantom.counter + 
             '<br>fantom vel x:' + fantom.vel.x + ', y:' + fantom.vel.y + ', z:' + fantom.vel.z +
-            '<br>tindalos x:' + tindalos.sphere.position.x + ', y:' + tindalos.sphere.position.y + ', z:' + tindalos.sphere.position.z
+            '<br>tindalos x:' + tindalos.sphere.position.x + ', y:' + tindalos.sphere.position.y + ', z:' + tindalos.sphere.position.z + ", counter:" + tindalos.counter 
 
         if(distance(camera.camera.position,fantom.sphere.position) < 2000 || distance(camera.camera.position,tindalos.sphere.position) < 2000){
-            elm.innerHTML = 'YOU LOSE<br>Press "R" to restart'
+            const score = performance.now() - start
+            elm.innerHTML = 'YOU LOSE<br>Press "R" to restart<br>score:' + (score/1000 - 50) + "(point)<br>time:" + (score/1000 - 50) + "(s)"
             playing = false;
             return
         }
