@@ -61,11 +61,11 @@ function init(){
     scene.add(box.boxes);
 
 
-    fantom = new block();
+    fantom = new enemy();
     fantom.make_sphere(box);
     scene.add(fantom.sphere);
 
-    tindalos = new block();
+    tindalos = new enemy();
     tindalos.make_sphere(box);
     scene.add(tindalos.sphere);
 
