@@ -5,10 +5,11 @@ class block {
     }
 
     make_floor(){
-        this.field = {x:50, y:50, z:50},
+        this.field = {x:200, y:50, z:200},
         this.size = 1000;
 
         const generation_rate = 0.5;
+        //const generation_rate = 0.0;
         const geom = new THREE.Geometry();
 
         this.box = new Array(this.field.x);;
@@ -23,23 +24,35 @@ class block {
                 for(var k=0; k<this.field.z; k++ ){
                     this.box[i][j][k] = {x:this.size*i, y:this.size*j, z:this.size*k, exist:false, mesh:false};
                     
-                    if( j == 0 || ( j < this.field.y - 5 &&   Math.random() <= generation_rate && this.box[i][j-1][k].exist ) ){
+                    if( j == 0 ){
                         this.box[i][j][k].exist = true;
-                    }
 
-                    if( i+k == 0 && j !=0 ){
-                        this.box[i][j][k].exist = false;
-                    }
+                        if( j==0 && k==0 ){
+                            const geom_tmp = new THREE.BoxGeometry(this.size * this.field.x, this.size, this.size * this.field.z);
+                            this.box[i][j][k].mesh = new THREE.Matrix4();
+                            this.box[i][j][k].mesh.makeTranslation(
+                                this.size * ( this.field.x - 1) / 2,
+                                this.box[i][j][k].y,
+                                this.size * ( this.field.z - 1)  /2
+                            );
+                            geom.merge( geom_tmp, this.box[i][j][k].mesh);
+                        }
 
-                    if(this.box[i][j][k].exist){
-                        const geom_tmp = new THREE.BoxGeometry(this.size, this.size, this.size);
-                        this.box[i][j][k].mesh = new THREE.Matrix4();
-                        this.box[i][j][k].mesh.makeTranslation(
-                            this.box[i][j][k].x,
-                            this.box[i][j][k].y,
-                            this.box[i][j][k].z
+                    }else if( j < this.field.y - 5 &&   Math.random() <= generation_rate && this.box[i][j-1][k].exist && !( i+k == 0 && j !=0 )){
+                        this.box[i][j][k].exist = true;
+                        
+                        this.box[i][0][k].geom = new THREE.BoxGeometry(this.size, this.size * j, this.size);
+                        this.box[i][0][k].mesh = new THREE.Matrix4();
+                        this.box[i][0][k].mesh.makeTranslation(
+                            this.box[i][0][k].x,
+                            (this.size * j )/2,
+                            this.box[i][0][k].z
                         );
-                        geom.merge( geom_tmp, this.box[i][j][k].mesh);
+
+                    }
+
+                    if( j == this.field.y-1 && this.box[i][1][k].exist ){   
+                        geom.merge( this.box[i][0][k].geom, this.box[i][0][k].mesh);
                     }
 
                     //console.log(i+","+j+","+k+"="+this.box[i][j][k].exist);
