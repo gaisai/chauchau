@@ -3,7 +3,7 @@ class player {
 
         this.acc_walk = 1000*3 / 60;     // 歩く時の加速度
         this.acc_jump = 1000*150 / 600;    // ジャンプした時の加速度
-        this.roc_turn = 800;    // １回転するマウスの移動ピクセル数
+        this.roc_turn = 1200;    // １回転するマウスの移動ピクセル数
         this.on_ground = 0;
         this.hit_position = {x:0,y:800,z:0};
         
