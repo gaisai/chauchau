@@ -5,7 +5,7 @@ class block {
     }
 
     make_floor(){
-        this.field = {x:30, y:30, z:30},
+        this.field = {x:50, y:30, z:50},
         //this.field = {x:10, y:30, z:100},
         this.size = 1000;
 
