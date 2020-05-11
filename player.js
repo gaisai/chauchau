@@ -8,6 +8,7 @@ class player {
         this.hit_position = {x:0,y:800,z:0};
         
         
+        
         this.canvas = canvas;
         this.position_flag = false;
         this.rotation_flag = false;

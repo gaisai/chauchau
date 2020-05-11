@@ -1,5 +1,10 @@
 
 class enemy{
+    constructor() {
+
+    }
+
+
     make_sphere(floor){
         this.size = 2000
         this.hit_position = {x:this.size/2, y:this.size/2,z:this.size/2}
@@ -72,11 +77,13 @@ class enemy{
         }
 
         let dist = Math.sqrt( Math.pow(foll.x,2) + Math.pow(foll.y,2) + Math.pow(foll.z,2));
+       /* 
         console.log(            
             "dist;" + dist + 
             "\np: "  + player.camera.position.x + "," + player.camera.position.y + "," +player.camera.position.z + 
             "\nt: "  + this.sphere.position.x + "," + this.sphere.position.y + "," +this.sphere.position.z 
         )
+        */
         for(let axis in foll){
             this.sphere.position[axis] += foll[axis] / dist * this.counter
         }

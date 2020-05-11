@@ -5,7 +5,8 @@ class block {
     }
 
     make_floor(){
-        this.field = {x:50, y:30, z:50},
+        this.field = {x:10, y:30, z:10},
+        //this.field = {x:10, y:30, z:100},
         this.size = 1000;
 
         const generation_rate = 0.5;
@@ -26,6 +27,7 @@ class block {
                     
                     if( j == 0 ){
                         this.box[i][j][k].exist = true;
+                        this.box[i][j][k].length = 0;
 
                         if( j==0 && k==0 ){
                             const geom_tmp = new THREE.BoxGeometry(this.size * this.field.x, this.size, this.size * this.field.z);
@@ -48,6 +50,7 @@ class block {
                             this.size * j/2 ,
                             this.box[i][0][k].z
                         );
+                        this.box[i][0][k].length = j;
 
                     }
 

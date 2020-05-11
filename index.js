@@ -26,8 +26,6 @@ playing = false;
 test_hit = false;
 
 
-
-
 function init(){
     playing = true;
     const start = performance.now();
@@ -70,7 +68,8 @@ function init(){
     scene.add(tindalos.sphere);
 
 
-
+    points = new point(box);
+    scene.add(points.make_objects(box))
 
     
 
@@ -103,6 +102,9 @@ function init(){
         ;
     }}
 
+    
+
+
 
     
     tick(); // 毎チック実行する関数
@@ -122,7 +124,11 @@ function init(){
 
         b = { x:Math.round(camera.movement.set.position.x/box.size), y:Math.round(camera.movement.set.position.y/box.size), z:Math.round(camera.movement.set.position.z/box.size) };
 
+        points.check(camera.camera.position);
+
+
         elm.innerHTML = 'size : ' + box.field.x + ',' + box.field.y + ',' + box.field.z + 
+            "<br>Point:" + points.get + 
             '<br>camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
             '<br>acc -> x:' + camera.movement.acc.position.x + ', y:' + camera.movement.acc.position.y + ', z:' + camera.movement.acc.position.z +
             '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
@@ -135,7 +141,14 @@ function init(){
 
         if(distance(camera.camera.position,fantom.sphere.position) < 2000 || distance(camera.camera.position,tindalos.sphere.position) < 2000){
             const score = performance.now() - start
-            elm.innerHTML = 'YOU LOSE<br>Press "R" to restart<br>score:' + (score/1000 - 50) + "(point)<br>time:" + (score/1000 - 50) + "(s)"
+            elm.innerHTML = 'YOU LOSE<br>Press "R" to restart<br>point:'+ points.get +'<br>score:' + (score/1000 - 50) + "(point)<br>time:" + (score/1000 - 50) + "(s)"
+            playing = false;
+            return
+        }
+
+        if(points.get >= points.max_point){
+            const score = performance.now() - start
+            elm.innerHTML = 'YOU WIN!<br>Press "R" to restart<br>point:'+ points.get +'<br>score:' + (score/1000 - 50) + "(point)<br>time:" + (score/1000 - 50) + "(s)"
             playing = false;
             return
         }
