@@ -5,7 +5,7 @@ class block {
     }
 
     make_floor(){
-        this.field = {x:200, y:50, z:200},
+        this.field = {x:50, y:30, z:50},
         this.size = 1000;
 
         const generation_rate = 0.5;
@@ -22,7 +22,7 @@ class block {
                 this.box[i][j] = new Array(this.field.z);
 
                 for(var k=0; k<this.field.z; k++ ){
-                    this.box[i][j][k] = {x:this.size*i, y:this.size*j, z:this.size*k, exist:false, mesh:false};
+                    this.box[i][j][k] = {x:this.size*i, y:this.size*j, z:this.size*k, exist:false};
                     
                     if( j == 0 ){
                         this.box[i][j][k].exist = true;
@@ -41,11 +41,11 @@ class block {
                     }else if( j < this.field.y - 5 &&   Math.random() <= generation_rate && this.box[i][j-1][k].exist && !( i+k == 0 && j !=0 )){
                         this.box[i][j][k].exist = true;
                         
-                        this.box[i][0][k].geom = new THREE.BoxGeometry(this.size, this.size * j, this.size);
+                        this.box[i][0][k].geom = new THREE.BoxGeometry(this.size, this.size * ( j+1 ) , this.size);
                         this.box[i][0][k].mesh = new THREE.Matrix4();
                         this.box[i][0][k].mesh.makeTranslation(
                             this.box[i][0][k].x,
-                            (this.size * j )/2,
+                            this.size * j/2 ,
                             this.box[i][0][k].z
                         );
 
