@@ -101,11 +101,7 @@ function init(){
     function onMouseUp(e){if(active_flag){          // 左クリックが上げられたときに動く関数
         ;
     }}
-
     
-
-
-
     
     tick(); // 毎チック実行する関数
 
@@ -127,8 +123,8 @@ function init(){
         points.check(camera.camera.position);
 
 
-        elm.innerHTML = 'size : ' + box.field.x + ',' + box.field.y + ',' + box.field.z + 
-            "<br>Point:" + points.get + 
+        elm.innerHTML = "<br>Point:" + points.get + "/" + points.max_point + 
+            '<br>size : ' + box.field.x + ',' + box.field.y + ',' + box.field.z + 
             '<br>camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
             '<br>acc -> x:' + camera.movement.acc.position.x + ', y:' + camera.movement.acc.position.y + ', z:' + camera.movement.acc.position.z +
             '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
