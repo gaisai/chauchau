@@ -148,6 +148,8 @@ function init(){
             playing = false;
             return
         }
+
+        
         requestAnimationFrame(tick);    
     }
 
