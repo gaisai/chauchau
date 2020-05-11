@@ -1,7 +1,7 @@
 
 class point{
     constructor(box) {
-        this.number = box.field.x;
+        this.number = box.field.x/2;
         this.size = box.size / 2 * 0.8 ;
         this.object = new Array(this.size);
         this.get = 0;
