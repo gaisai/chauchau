@@ -17,7 +17,7 @@ class point{
 
             this.object[i] = {x:Math.floor(Math.random() * box.field.x ) * box.size, y: 0, z: Math.floor(Math.random() * box.field.x ) * box.size, matr: true, point:i+1};
             this.object[i].y =  ( box.box[(this.object[i].x/box.size)][this.object[i].y][(this.object[i].z/box.size)].length + 1) * box.size;
-            //console.log("length:" + box.box[(this.object[i].x/box.size)][0][(this.object[i].z/box.size)].length +"(" + (this.object[i].x/box.size) + "," + this.object[i].y + "," + (this.object[i].z/box.size) )
+            console.log("length:" + box.box[(this.object[i].x/box.size)][0][(this.object[i].z/box.size)].length +"(" + (this.object[i].x/box.size) + "," + this.object[i].y + "," + (this.object[i].z/box.size) )
 
 
             let geom_tmp = new THREE.OctahedronGeometry( this.size );
@@ -39,10 +39,10 @@ class point{
 
     }
 
-    check(camera_posi){
+    check(camera_posi,size){
 
         for(var i=0 ;i< this.number; i++){
-            if(distance(camera_posi,this.object[i]) < 1000){ 
+            if(distance(camera_posi,this.object[i]) < size){ 
 
                 console.log("get:"+this.object[i].point)
 

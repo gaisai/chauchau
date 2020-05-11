@@ -6,7 +6,7 @@ class enemy{
 
 
     make_sphere(floor){
-        this.size = 2000
+        this.size = floor.size
         this.hit_position = {x:this.size/2, y:this.size/2,z:this.size/2}
         this.acc = {x:0, y:gravity, z:0};
         this.vel = {x:0, y:0, z:0};
