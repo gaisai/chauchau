@@ -1,9 +1,9 @@
 class player {
     constructor(canvas) {
 
-        this.acc_walk = 1000*3 / 60;     // 歩く時の加速度
-        this.acc_jump = 1000*150 / 600;    // ジャンプした時の加速度
-        this.roc_turn = 1200;    // １回転するマウスの移動ピクセル数
+        this.acc_walk = base_size * 20 * s_flame;     // 歩く時の加速度
+        this.acc_jump = base_size * 80 * s_flame;    // ジャンプした時の加速度
+        this.roc_turn = 1500;    // １回転するマウスの移動ピクセル数
         this.on_ground = 0;
         this.hit_position = {x:0,y:800,z:0};
         
@@ -31,7 +31,7 @@ class player {
             }
         }
 
-        this.camera = new THREE.PerspectiveCamera(90, width / height, 1, 2000000);
+        this.camera = new THREE.PerspectiveCamera(30, width / height, 1, 2000000);
             this.camera.position.set(this.movement.set.position.x,this.movement.set.position.y,this.movement.set.position.z);
             this.camera.rotation.set(this.movement.set.rotation.x,this.movement.set.rotation.y,this.movement.set.rotation.z);
             this.camera.rotation.order = "YZX"

@@ -5,12 +5,11 @@ class block {
     }
 
     make_floor(){
-        this.field = {x:30, y:30, z:30},
+        this.field = {x:100, y:30, z:100},
         //this.field = {x:10, y:30, z:100},
-        this.size = 1000;
+        this.size = base_size;
 
         const generation_rate = 0.;
-        //const generation_rate = 0.0;
         const geom = new THREE.Geometry();
 
         this.box = new Array(this.field.x);;
@@ -19,7 +18,6 @@ class block {
             this.box[i] = new Array(this.field.y);
 
             for(var j=0; j<this.field.y+1; j++){ 
-                // box[i][j] = len_z;
                 this.box[i][j] = new Array(this.field.z);
 
                 for(var k=0; k<this.field.z; k++ ){
@@ -30,7 +28,6 @@ class block {
                         this.box[i][j][k].length = 0;
 
                         if( j==0 && k==0 ){
-
                            
                            this.box[i][j][k].mesh = new THREE.Mesh(new THREE.BoxGeometry(this.size * this.field.x, this.size, this.size * this.field.z));
                            this.box[i][j][k].mesh.position.set(

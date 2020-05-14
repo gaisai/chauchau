@@ -6,11 +6,16 @@ let flame = 0;
 let time = 0
 
 
+
+
 // サイズを指定
 const width = window.innerWidth;
 const height = window.innerHeight/5*3;
 const player_height = 800;
-const gravity = -1 * 1000*8 / 600;
+
+const s_flame = 1/60;
+const base_size = 1000; //メートル扱いする
+const gravity = -1 * base_size *  5 * s_flame;
 
 function ElementRequestPointerLock(element){
     element["requestPointerLock"]();
@@ -63,19 +68,8 @@ function init(){
     scene.add(box.boxes);
 
 
-    fantom = new enemy();
-    fantom.make_sphere(box);
-    scene.add(fantom.sphere);
-
-    tindalos = new enemy();
-    tindalos.make_sphere(box);
-    scene.add(tindalos.sphere);
-
-
-    points = new point(box);
-    scene.add(points.make_objects(box))
-
-    
+    boss = new snowman(box)
+    scene.add(boss.body);
 
     // イベント時に呼び出される
     canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
@@ -111,57 +105,26 @@ function init(){
 
     function tick(){
         
-        /*
-        flame ++;
-        if(flame % 2 == 0){
-            flame = flame % 10;
-            return;
-        }
-*/
         let flame_time = performance.now();
 
         if(active_flag){
             camera.set_move();
             camera.moving( box.hit_judge( camera.camera.position, camera.movement.set.position, camera.hit_position ,camera.on_ground ,true));
-            fantom.hopping_sphere(box,camera);
-            tindalos.crawling_sphere(box,camera);
         }
 
         // レンダリング
         renderer.render(scene, camera.camera); 
         
 
-        b = { x:Math.round(camera.movement.set.position.x/box.size), y:Math.round(camera.movement.set.position.y/box.size), z:Math.round(camera.movement.set.position.z/box.size) };
 
-        points.check(camera.camera.position,box.size);
-
-
-        elm.innerHTML = "<br>Point:" + points.get + "/" + points.max_point + 
+        elm.innerHTML = //"<br>Point:" + points.get + "/" + points.max_point + 
             "<br>time" + (flame_time - time) +
             '<br>size : ' + box.field.x + ',' + box.field.y + ',' + box.field.z + 
             '<br>camera <br>posi-> x:' + camera.camera.position.x + ', y:' + camera.camera.position.y + ', z:' + camera.camera.position.z +
             '<br>acc -> x:' + camera.movement.acc.position.x + ', y:' + camera.movement.acc.position.y + ', z:' + camera.movement.acc.position.z +
             '<br>vel -> x:' + camera.movement.vel.position.x + ', y:' + camera.movement.vel.position.y + ', z:' + camera.movement.vel.position.z +
-            //'<br>block -> x:' + b.x + ', y:' + b.y + ', z:' + b.z + '(' + box.box[b.x][b.y][b.z].exist + ')' + on_ground +
             '<br>rota x:' + camera.camera.rotation.x/Math.PI + 'PI, y:' + camera.camera.rotation.y/Math.PI + 'PI, z:' + camera.camera.rotation.z/Math.PI + 'PI'+
-            '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI' +
-            '<br>fantom x:' + fantom.sphere.position.x + ', y:' + fantom.sphere.position.y + ', z:' + fantom.sphere.position.z + ", counter:" + fantom.counter + 
-            '<br>fantom vel x:' + fantom.vel.x + ', y:' + fantom.vel.y + ', z:' + fantom.vel.z +
-            '<br>tindalos x:' + tindalos.sphere.position.x + ', y:' + tindalos.sphere.position.y + ', z:' + tindalos.sphere.position.z + ", counter:" + tindalos.counter 
-
-        if(distance(camera.camera.position,fantom.sphere.position) < box.size || distance(camera.camera.position,tindalos.sphere.position) < box.size){
-            const score = performance.now() - start
-            elm.innerHTML = 'YOU LOSE<br>Press "R" to restart<br>point:'+ points.get +'<br>score:' + (score/1000 - 50) + "(point)<br>time:" + (score/1000 - 50) + "(s)"
-            playing = false;
-            return
-        }
-
-        if(points.get >= points.max_point){
-            const score = performance.now() - start
-            elm.innerHTML = 'YOU WIN!<br>Press "R" to restart<br>point:'+ points.get +'<br>score:' + (score/1000 - 50) + "(point)<br>time:" + (score/1000 - 50) + "(s)"
-            playing = false;
-            return
-        }
+            '<br>qua x:' + camera.camera.quaternion.x/Math.PI + 'PI, y:' + camera.camera.quaternion.y/Math.PI + 'PI, z:' + camera.camera.quaternion.z/Math.PI + 'PI'   
 
         time = performance.now()
         requestAnimationFrame(tick);    
@@ -176,7 +139,6 @@ function init(){
 function distance( a, b ){
     
     dis = Math.sqrt( Math.pow((a.x - b.x),2) + Math.pow((a.y - b.y),2) + Math.pow((a.z - b.z),2))
-    //console.log("distance = "+dis + "\n" + a.x +","+ a.y + "," + a.z +"\n" + b.x +","+ b.y + "," + b.z);
     return(dis)
 
 }
