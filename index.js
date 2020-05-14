@@ -65,11 +65,13 @@ function init(){
     camera = new player(canvas);
     box = new block();
     box.make_floor();
-    scene.add(box.boxes);
+    //scene.add(box.boxes);
 
 
     boss = new snowman(box)
-    scene.add(boss.body);
+    //boss.add(scene);
+    scene.add(boss.body)
+    boss.action = boss.motion_hummer
 
     // イベント時に呼び出される
     canvas.setAttribute('tabindex', 0); // focusしている時のみ、keyDown,up を有効に
@@ -111,6 +113,8 @@ function init(){
             camera.set_move();
             camera.moving( box.hit_judge( camera.camera.position, camera.movement.set.position, camera.hit_position ,camera.on_ground ,true));
         }
+
+        boss.action()
 
         // レンダリング
         renderer.render(scene, camera.camera); 

@@ -6,6 +6,7 @@ class point{
         this.object = new Array(this.size);
         this.get = 0;
         this.max_point = this.number * 2;
+        this.dash = false;
 
     }
 
